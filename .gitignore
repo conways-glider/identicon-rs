@@ -1,0 +1,6 @@
+/target
+**/*.rs.bk
+
+# Prevents the test image
+test.png
+output.png
