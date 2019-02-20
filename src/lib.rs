@@ -28,7 +28,7 @@ pub fn generate_image(input_value: &str) -> DynamicImage {
 
     //(240, 240, 240)lor values
     let color = color::generate_color(input_trimmed);
-    println!("{:?}", color);
+    // println!("{:?}", color);
 
     // create a new ImgBuf with width: imgx and height: imgy
     let mut imgbuf = ImageBuffer::new(image_size, image_size);

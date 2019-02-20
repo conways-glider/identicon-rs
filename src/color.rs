@@ -25,7 +25,7 @@ pub fn generate_color(input_value: &str) -> LinSrgb<u8> {
     let saturation = rng.gen_range(0.25, 0.95);
     let lightness = rng.gen_range(0.75, 0.85);
 
-    println!("HSL: {}, {}, {}", hue, saturation, lightness);
+    // println!("HSL: {}, {}, {}", hue, saturation, lightness);
 
     let color_hsl = Hsl::new(hue, saturation, lightness);
 

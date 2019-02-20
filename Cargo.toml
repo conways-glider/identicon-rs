@@ -1,5 +1,5 @@
 [package]
-name = "identicon"
+name = "identicon-rs"
 version = "0.1.0"
 authors = ["Nia Watts <niawatts95@gmail.com>"]
 edition = "2018"
