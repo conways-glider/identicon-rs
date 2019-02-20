@@ -1,14 +1,22 @@
-use sha2::{
-    Sha512,
-    Digest
-};
+// use sha2::{
+//     Sha512,
+//     Sha512Trunc256,
+//     Digest
+// };
 
 use image::{
     ImageBuffer,
     DynamicImage
 };
 
-const IMAGE_SIZE: u32 = 8;
+use palette::{
+    LinSrgb
+};
+
+mod color;
+mod grid;
+
+const IMAGE_SIZE: u32 = 5;
 
 /// Returns a DynamicImage based on the input given
 ///
@@ -23,24 +31,34 @@ const IMAGE_SIZE: u32 = 8;
 /// let image_buffer = generate_image("test name");
 /// ```
 pub fn generate_image(input_value: &str) -> DynamicImage {
+
     let imgx = IMAGE_SIZE;
     let imgy = IMAGE_SIZE;
+    let background_color: LinSrgb<u8> = LinSrgb::new(245,245,245);
 
-    let hash = Sha512::new()
-        .chain(input_value)
-        .result();
+    // Compute the hash value
+    // let hash = Sha512::digest(input_value.as_bytes());
+    // let hash_slice = hash.as_slice();
 
-    println!("{:?}", hash);
+    // Compute the color values
+    let color = color::generate_color(input_value);
+    println!("{:?}", color);
 
     // Create a new ImgBuf with width: imgx and height: imgy
     let mut imgbuf = ImageBuffer::new(imgx, imgy);
 
+    // Create a new grid
+    let grid = grid::generate_full_grid(IMAGE_SIZE as usize, input_value);
+
     // Iterate over the coordinates and pixels of the image
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-        let r = 32 * x as u8;
-        let g = (32 * (-1 * (x as i32) + imgx as i32) as i32) as u8;
-        let b = 32 * y as u8;
-        *pixel = image::Rgb([r, g, b]);
+        let count = x + y * IMAGE_SIZE;
+
+        if grid[count as usize] {
+        *pixel = image::Rgb([color.red, color.green, color.blue]);
+        } else {
+            *pixel = image::Rgb([background_color.red, background_color.green, background_color.blue]);
+        }
     }
 
     // Save the image as “fractal.png”, the format is deduced from the path
