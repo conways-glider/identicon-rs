@@ -3,4 +3,4 @@
 
 # Prevents the test image
 test.png
-output.png
+output*.png
