@@ -1,66 +1,102 @@
-use sha2::{
-    Sha512,
-    Digest
-};
-
 use image::{
     ImageBuffer,
-    DynamicImage
+    DynamicImage,
+    FilterType
 };
 
-const IMAGE_SIZE: u32 = 8;
+use palette::{
+    LinSrgb
+};
 
-/// Returns a DynamicImage based on the input given
-///
-/// # Arguments
-///
-/// * `input_value` - A string that will be used for the hashing
-///
-/// # Example
-///
-/// ```
-/// use identicon::generate_image;
-/// let image_buffer = generate_image("test name");
-/// ```
+mod color;
+mod grid;
+
+const BACKGROUND_COLOR: u8 = 240;
+
+fn get_background_color() -> LinSrgb<u8> {
+    LinSrgb::new(
+        BACKGROUND_COLOR,
+        BACKGROUND_COLOR,
+        BACKGROUND_COLOR
+    )
+}
+
 pub fn generate_image(input_value: &str) -> DynamicImage {
-    let imgx = IMAGE_SIZE;
-    let imgy = IMAGE_SIZE;
+    let image_size = 5;
+    let background_color = get_background_color();
 
-    let hash = Sha512::new()
-        .chain(input_value)
-        .result();
+    //(240, 240, 240)lor values
+    let color = color::generate_color(input_value);
+    println!("{:?}", color);
 
-    println!("{:?}", hash);
+    // create a new ImgBuf with width: imgx and height: imgy
+    let mut imgbuf = ImageBuffer::new(image_size, image_size);
 
-    // Create a new ImgBuf with width: imgx and height: imgy
-    let mut imgbuf = ImageBuffer::new(imgx, imgy);
+    // create a new grid
+    let grid = grid::generate_full_grid(image_size, input_value);
 
-    // Iterate over the coordinates and pixels of the image
+    // iterate over the coordinates and pixels of the image
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-        let r = 32 * x as u8;
-        let g = (32 * (-1 * (x as i32) + imgx as i32) as i32) as u8;
-        let b = 32 * y as u8;
-        *pixel = image::Rgb([r, g, b]);
+        let count = x + y * image_size;
+
+        if grid[count as usize] {
+            *pixel = image::Rgb([color.red, color.green, color.blue]);
+        } else {
+            *pixel = image::Rgb([background_color.red, background_color.green, background_color.blue]);
+        }
     }
 
-    // Save the image as “fractal.png”, the format is deduced from the path
+    // return the image
     DynamicImage::ImageRgb8(imgbuf)
 }
 
-/// This is a wrapper around generate_image to directly save the file to the local filesystem
-///
-/// # Arguments
-///
-/// * `input_value` - A string that will be used for the hashing
-/// * `output_filename` - A string that will be the name of the output file
-///
-/// # Example
-/// ```
-/// use identicon::save_image;
-/// save_image("test name", "output.png")
-/// ```
+pub fn generate_scaled_image(input_value: &str, scale: u32) -> DynamicImage {
+    generate_image(input_value)
+        .resize(scale, scale, FilterType::Nearest)
+}
+
+pub fn generate_bordered_image(input_value: &str, scale: u32, border_width: u32) -> DynamicImage {
+    let background_color = get_background_color();
+    let base_image = generate_scaled_image(input_value, scale).to_rgb();
+
+    let image_size = base_image.width() + (border_width * 2);
+
+    // create a new ImgBuf with width: imgx and height: imgy
+    let mut imgbuf = ImageBuffer::new(image_size, image_size);
+
+    // create a clojure to check whether the given location is within the border space
+    let check_within_border = |location: u32| -> bool {
+        location < border_width || location >= border_width + scale
+    };
+
+    // iterate over the coordinates and pixels of the image
+    for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
+        if check_within_border(x) || check_within_border(y) {
+            *pixel = image::Rgb([background_color.red, background_color.green, background_color.blue]);
+        } else {
+            *pixel = base_image.get_pixel(x - border_width, y - border_width).clone();
+        }
+    }
+
+    DynamicImage::ImageRgb8(imgbuf)
+}
+
 pub fn save_image(input_value: &str, output_filename: &str) {
-    generate_image(input_value).save(output_filename).unwrap();
+    generate_image(input_value)
+        .save(output_filename)
+        .unwrap();
+}
+
+pub fn save_scaled_image(input_value: &str, output_filename: &str, scale: u32) {
+    generate_scaled_image(input_value, scale)
+        .save(output_filename)
+        .unwrap();
+}
+
+pub fn save_bordered_image(input_value: &str, output_filename: &str, scale: u32, border_width: u32) {
+    generate_bordered_image(input_value, scale, border_width)
+        .save(output_filename)
+        .unwrap();
 }
 
 #[cfg(test)]
