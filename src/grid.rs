@@ -1,6 +1,5 @@
 use sha2::{
     Sha512,
-    Sha512Trunc256,
     Digest
 };
 

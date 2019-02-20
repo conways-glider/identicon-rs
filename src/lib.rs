@@ -10,10 +10,8 @@ use palette::{
 mod color;
 mod grid;
 
-const IMAGE_SIZE: u8 = 5;
-
 pub fn generate_image(input_value: &str) -> DynamicImage {
-    let img_size_u32 = IMAGE_SIZE as u32;
+    let img_size = 5;
     let background_color: LinSrgb<u8> = LinSrgb::new(245,245,245);
 
     // Compute the color values
@@ -21,14 +19,14 @@ pub fn generate_image(input_value: &str) -> DynamicImage {
     println!("{:?}", color);
 
     // create a new ImgBuf with width: imgx and height: imgy
-    let mut imgbuf = ImageBuffer::new(img_size_u32, img_size_u32);
+    let mut imgbuf = ImageBuffer::new(img_size, img_size);
 
     // create a new grid
-    let grid = grid::generate_full_grid(IMAGE_SIZE as usize, input_value);
+    let grid = grid::generate_full_grid(img_size as usize, input_value);
 
     // iterate over the coordinates and pixels of the image
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-        let count = x + y * img_size_u32;
+        let count = x + y * img_size;
 
         if grid[count as usize] {
         *pixel = image::Rgb([color.red, color.green, color.blue]);
