@@ -24,16 +24,17 @@ fn get_background_color() -> LinSrgb<u8> {
 pub fn generate_image(input_value: &str) -> DynamicImage {
     let image_size = 5;
     let background_color = get_background_color();
+    let input_trimmed = input_value.trim();
 
     //(240, 240, 240)lor values
-    let color = color::generate_color(input_value);
+    let color = color::generate_color(input_trimmed);
     println!("{:?}", color);
 
     // create a new ImgBuf with width: imgx and height: imgy
     let mut imgbuf = ImageBuffer::new(image_size, image_size);
 
     // create a new grid
-    let grid = grid::generate_full_grid(image_size, input_value);
+    let grid = grid::generate_full_grid(image_size, input_trimmed);
 
     // iterate over the coordinates and pixels of the image
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
@@ -104,5 +105,19 @@ mod tests {
     #[test]
     fn it_works() {
         assert_eq!(2 + 2, 4);
+    }
+
+    #[test]
+    fn trim_of_input_works() {
+        let image_normal = crate::generate_image("test");
+        let image_padded = crate::generate_image("  test  ");
+        assert_eq!(image_normal.to_rgb().into_raw(), image_padded.to_rgb().into_raw());
+    }
+
+    #[test]
+    fn trim_of_input_failure_works() {
+        let image_normal = crate::generate_image("test");
+        let image_padded = crate::generate_image("  test1  ");
+        assert_ne!(image_normal.to_rgb().into_raw(), image_padded.to_rgb().into_raw());
     }
 }
