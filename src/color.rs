@@ -1,34 +1,29 @@
 use sha2::{
-    Sha512Trunc256,
+    Sha512,
     Digest
 };
-
-use rand::prelude::*;
 
 use palette::{
     LinSrgb,
     Hsl
 };
 
+use crate::map_values::map_values;
+
 pub fn generate_color(input_value: &str) -> LinSrgb<u8> {
-    // Compute the seed
-    // Due to limitations of rand, rand::SeedableRng needs
-    // an array of 32 u8 values.
-    // Slices are not currently accepted.
-    let hash_256 = Sha512Trunc256::digest(input_value.as_bytes());
-    let hash_256_slice = hash_256.as_slice();
-    let mut seed: [u8; 32] = [0;32];
-    seed.copy_from_slice(hash_256_slice);
+    // compute hash for hue space in larger bitspace
+    let hash = Sha512::digest(input_value.as_bytes());
+    let hue_hash_1 = (hash[0] as u16 & 0x0f) << 8;
+    let hue_hash_2 = hash[1] as u16;
+    let hue_hash = (hue_hash_1 | hue_hash_2) as u32;
 
-    let mut rng: StdRng = rand::SeedableRng::from_seed(seed);
-    let hue = rng.gen_range(0.0, 360.0);
-    let saturation = rng.gen_range(0.25, 0.95);
-    let lightness = rng.gen_range(0.75, 0.85);
+    // compute hsl values
+    let hue = map_values(hue_hash, 0, 4095, 0, 360);
+    let saturation = map_values(hash[2] as u32, 0, 255, 25, 95) / 100.0;
+    let lightness = map_values(hash[3] as u32, 0, 255, 75, 85) / 100.0;
 
-    // println!("HSL: {}, {}, {}", hue, saturation, lightness);
-
+    // convert color to rgb value
     let color_hsl = Hsl::new(hue, saturation, lightness);
-
     let color_rgb = LinSrgb::from(color_hsl)
         .into_format();
 

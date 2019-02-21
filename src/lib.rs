@@ -10,6 +10,7 @@ use palette::{
 
 mod color;
 mod grid;
+mod map_values;
 
 const BACKGROUND_COLOR: u8 = 240;
 
@@ -26,9 +27,7 @@ pub fn generate_image(input_value: &str) -> DynamicImage {
     let background_color = get_background_color();
     let input_trimmed = input_value.trim();
 
-    //(240, 240, 240)lor values
     let color = color::generate_color(input_trimmed);
-    // println!("{:?}", color);
 
     // create a new ImgBuf with width: imgx and height: imgy
     let mut imgbuf = ImageBuffer::new(image_size, image_size);
