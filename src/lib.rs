@@ -90,18 +90,22 @@ impl Identicon {
         // create a new grid
         let grid = grid::generate_full_grid(self.size, &self.hash);
 
+        // create pixel objects
+        let pixel_active = image::Rgb([color.red, color.green, color.blue]);
+        let pixel_background = image::Rgb([
+            background_color.red,
+            background_color.green,
+            background_color.blue,
+        ]);
+
         // iterate over the coordinates and pixels of the image
         for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
             let count = x + y * self.size % self.size.pow(2);
 
             if grid[count as usize] {
-                *pixel = image::Rgb([color.red, color.green, color.blue]);
+                *pixel = pixel_active;
             } else {
-                *pixel = image::Rgb([
-                    background_color.red,
-                    background_color.green,
-                    background_color.blue,
-                ]);
+                *pixel = pixel_background;
             }
         }
 
@@ -121,14 +125,17 @@ impl Identicon {
                 location < self.border || location >= self.border + self.scale
             };
 
+            // create pixel objects
+            let pixel_background = image::Rgb([
+                background_color.red,
+                background_color.green,
+                background_color.blue,
+            ]);
+
             // iterate over the coordinates and pixels of the image
             for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
                 if check_within_border(x) || check_within_border(y) {
-                    *pixel = image::Rgb([
-                        background_color.red,
-                        background_color.green,
-                        background_color.blue,
-                    ]);
+                    *pixel = pixel_background;
                 } else {
                     *pixel = base_image
                         .get_pixel(x - self.border, y - self.border)
