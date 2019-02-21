@@ -14,14 +14,13 @@ fn main() {
     let identicon_fluffy = Identicon::new_default(fluffy_samurai);
     identicon_fluffy.save_image("output_1.png");
 
-    // chained example
-    Identicon::new_default(test_string).save_image("output_2.png");
+    // chained example with no border
+    Identicon::new_no_border(test_string).save_image("output_2.png");
 }
 ```
 
 ## TODO
-- investigate removal of palette crate
-- move functions into an object that stores the generated data, along with the input data
+- prevent second image generation loop due to borders
 - build a rust cli using this
 - build a rust server (using actix?) to publish images
 - build an npm/wasm package using this

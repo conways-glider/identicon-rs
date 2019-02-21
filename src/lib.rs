@@ -52,6 +52,21 @@ impl Identicon {
         }
     }
 
+    pub fn new_no_border(input_value: &str) -> Identicon {
+        let input_trimmed = input_value.trim();
+        let hash = Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec();
+        let background_color = 240;
+
+        Identicon {
+            hash,
+            symmetry: Symmetry::None,
+            border: 0,
+            size: 5,
+            scale: 500,
+            background_color: (background_color, background_color, background_color)
+        }
+    }
+
     fn get_background_color(&self) -> LinSrgb<u8> {
         let background_color = self.background_color;
         LinSrgb::new(background_color.0, background_color.1, background_color.2)
@@ -88,31 +103,35 @@ impl Identicon {
     }
 
     pub fn generate_image(&self) -> DynamicImage {
-        let base_image = self.generate_base_image().to_rgb();
-        let background_color = self.get_background_color();
-        let size = self.scale + self.border * 2;
-        let mut imgbuf = ImageBuffer::new(size, size);
-        //
-    // create a clojure to check whether the given location is within the border space
-    let check_within_border =
-        |location: u32| -> bool { location < self.border || location >= self.border + self.scale};
+        if self.border > 0 {
+            let base_image = self.generate_base_image().to_rgb();
+            let background_color = self.get_background_color();
+            let size = self.scale + self.border * 2;
+            let mut imgbuf = ImageBuffer::new(size, size);
 
-    // iterate over the coordinates and pixels of the image
-    for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-        if check_within_border(x) || check_within_border(y) {
-            *pixel = image::Rgb([
-                background_color.red,
-                background_color.green,
-                background_color.blue,
-            ]);
+            // create a clojure to check whether the given location is within the border space
+            let check_within_border =
+                |location: u32| -> bool { location < self.border || location >= self.border + self.scale};
+
+            // iterate over the coordinates and pixels of the image
+            for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
+                if check_within_border(x) || check_within_border(y) {
+                    *pixel = image::Rgb([
+                                        background_color.red,
+                                        background_color.green,
+                                        background_color.blue,
+                    ]);
+                } else {
+                    *pixel = base_image
+                        .get_pixel(x - self.border, y - self.border)
+                        .clone();
+                }
+            }
+
+            DynamicImage::ImageRgb8(imgbuf)
         } else {
-            *pixel = base_image
-                .get_pixel(x - self.border, y - self.border)
-                .clone();
+            self.generate_base_image()
         }
-    }
-
-    DynamicImage::ImageRgb8(imgbuf)
     }
 
     pub fn save_image(&self, output_filename: &str) {

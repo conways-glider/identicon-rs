@@ -8,6 +8,6 @@ fn main() {
     let identicon_fluffy = Identicon::new_default(fluffy_samurai);
     identicon_fluffy.save_image("output_1.png");
 
-    // chained example
-    Identicon::new_default(test_string).save_image("output_2.png");
+    // chained example with no border
+    Identicon::new_no_border(test_string).save_image("output_2.png");
 }
