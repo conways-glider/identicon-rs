@@ -1,12 +1,6 @@
-use sha2::{
-    Sha512,
-    Digest
-};
+use sha2::{Digest, Sha512};
 
-use palette::{
-    LinSrgb,
-    Hsl
-};
+use palette::{Hsl, LinSrgb};
 
 use crate::map_values::map_values;
 
@@ -24,8 +18,7 @@ pub fn generate_color(input_value: &str) -> LinSrgb<u8> {
 
     // convert color to rgb value
     let color_hsl = Hsl::new(hue, saturation, lightness);
-    let color_rgb = LinSrgb::from(color_hsl)
-        .into_format();
+    let color_rgb = LinSrgb::from(color_hsl).into_format();
 
     color_rgb
 }

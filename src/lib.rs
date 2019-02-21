@@ -1,12 +1,6 @@
-use image::{
-    ImageBuffer,
-    DynamicImage,
-    FilterType
-};
+use image::{DynamicImage, FilterType, ImageBuffer};
 
-use palette::{
-    LinSrgb
-};
+use palette::LinSrgb;
 
 mod color;
 mod grid;
@@ -15,11 +9,7 @@ mod map_values;
 const BACKGROUND_COLOR: u8 = 240;
 
 fn get_background_color() -> LinSrgb<u8> {
-    LinSrgb::new(
-        BACKGROUND_COLOR,
-        BACKGROUND_COLOR,
-        BACKGROUND_COLOR
-    )
+    LinSrgb::new(BACKGROUND_COLOR, BACKGROUND_COLOR, BACKGROUND_COLOR)
 }
 
 pub fn generate_image(input_value: &str) -> DynamicImage {
@@ -42,7 +32,11 @@ pub fn generate_image(input_value: &str) -> DynamicImage {
         if grid[count as usize] {
             *pixel = image::Rgb([color.red, color.green, color.blue]);
         } else {
-            *pixel = image::Rgb([background_color.red, background_color.green, background_color.blue]);
+            *pixel = image::Rgb([
+                background_color.red,
+                background_color.green,
+                background_color.blue,
+            ]);
         }
     }
 
@@ -51,8 +45,7 @@ pub fn generate_image(input_value: &str) -> DynamicImage {
 }
 
 pub fn generate_scaled_image(input_value: &str, scale: u32) -> DynamicImage {
-    generate_image(input_value)
-        .resize(scale, scale, FilterType::Nearest)
+    generate_image(input_value).resize(scale, scale, FilterType::Nearest)
 }
 
 pub fn generate_bordered_image(input_value: &str, scale: u32, border_width: u32) -> DynamicImage {
@@ -65,16 +58,21 @@ pub fn generate_bordered_image(input_value: &str, scale: u32, border_width: u32)
     let mut imgbuf = ImageBuffer::new(image_size, image_size);
 
     // create a clojure to check whether the given location is within the border space
-    let check_within_border = |location: u32| -> bool {
-        location < border_width || location >= border_width + scale
-    };
+    let check_within_border =
+        |location: u32| -> bool { location < border_width || location >= border_width + scale };
 
     // iterate over the coordinates and pixels of the image
     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
         if check_within_border(x) || check_within_border(y) {
-            *pixel = image::Rgb([background_color.red, background_color.green, background_color.blue]);
+            *pixel = image::Rgb([
+                background_color.red,
+                background_color.green,
+                background_color.blue,
+            ]);
         } else {
-            *pixel = base_image.get_pixel(x - border_width, y - border_width).clone();
+            *pixel = base_image
+                .get_pixel(x - border_width, y - border_width)
+                .clone();
         }
     }
 
@@ -82,9 +80,7 @@ pub fn generate_bordered_image(input_value: &str, scale: u32, border_width: u32)
 }
 
 pub fn save_image(input_value: &str, output_filename: &str) {
-    generate_image(input_value)
-        .save(output_filename)
-        .unwrap();
+    generate_image(input_value).save(output_filename).unwrap();
 }
 
 pub fn save_scaled_image(input_value: &str, output_filename: &str, scale: u32) {
@@ -93,7 +89,12 @@ pub fn save_scaled_image(input_value: &str, output_filename: &str, scale: u32) {
         .unwrap();
 }
 
-pub fn save_bordered_image(input_value: &str, output_filename: &str, scale: u32, border_width: u32) {
+pub fn save_bordered_image(
+    input_value: &str,
+    output_filename: &str,
+    scale: u32,
+    border_width: u32,
+) {
     generate_bordered_image(input_value, scale, border_width)
         .save(output_filename)
         .unwrap();
@@ -110,13 +111,19 @@ mod tests {
     fn trim_of_input_works() {
         let image_normal = crate::generate_image("test");
         let image_padded = crate::generate_image("  test  ");
-        assert_eq!(image_normal.to_rgb().into_raw(), image_padded.to_rgb().into_raw());
+        assert_eq!(
+            image_normal.to_rgb().into_raw(),
+            image_padded.to_rgb().into_raw()
+        );
     }
 
     #[test]
     fn trim_of_input_failure_works() {
         let image_normal = crate::generate_image("test");
         let image_padded = crate::generate_image("  test1  ");
-        assert_ne!(image_normal.to_rgb().into_raw(), image_padded.to_rgb().into_raw());
+        assert_ne!(
+            image_normal.to_rgb().into_raw(),
+            image_padded.to_rgb().into_raw()
+        );
     }
 }
