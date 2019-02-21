@@ -16,14 +16,14 @@ pub enum Symmetry {
 pub struct Identicon {
     hash: Vec<u8>,
     symmetry: Symmetry,
-    border: u8,
-    size: u8,
+    border: u32,
+    size: u32,
     scale: u32,
     background_color: (u8, u8, u8)
 }
 
 impl Identicon {
-    pub fn new(input_value: &str, symmetry: Symmetry, border: u8, size: u8, scale: u32, background_color: (u8, u8, u8)) -> Identicon {
+    pub fn new(input_value: &str, symmetry: Symmetry, border: u32, size: u32, scale: u32, background_color: (u8, u8, u8)) -> Identicon {
         let input_trimmed = input_value.trim();
         let hash = Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec();
 
@@ -45,7 +45,7 @@ impl Identicon {
         Identicon {
             hash,
             symmetry: Symmetry::None,
-            border: 1,
+            border: 50,
             size: 5,
             scale: 500,
             background_color: (background_color, background_color, background_color)
@@ -57,20 +57,20 @@ impl Identicon {
         LinSrgb::new(background_color.0, background_color.1, background_color.2)
     }
 
-    pub fn generate_image(&self) -> DynamicImage {
+    fn generate_base_image(&self) -> DynamicImage {
         let background_color = self.get_background_color();
 
         let color = color::generate_color(&self.hash);
 
         // create a new ImgBuf with width: imgx and height: imgy
-        let mut imgbuf = ImageBuffer::new(self.size as u32, self.size as u32);
+        let mut imgbuf = ImageBuffer::new(self.size, self.size);
 
         // create a new grid
         let grid = grid::generate_full_grid(self.size, &self.hash);
 
         // iterate over the coordinates and pixels of the image
         for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-            let count = x + y * self.size as u32;
+            let count = x + y * self.size % self.size.pow(2);
 
             if grid[count as usize] {
                 *pixel = image::Rgb([color.red, color.green, color.blue]);
@@ -84,65 +84,41 @@ impl Identicon {
         }
 
         // return the image
-        DynamicImage::ImageRgb8(imgbuf)
+        DynamicImage::ImageRgb8(imgbuf).resize(self.scale, self.scale, FilterType::Nearest)
+    }
+
+    pub fn generate_image(&self) -> DynamicImage {
+        let base_image = self.generate_base_image().to_rgb();
+        let background_color = self.get_background_color();
+        let size = self.scale + self.border * 2;
+        let mut imgbuf = ImageBuffer::new(size, size);
+        //
+    // create a clojure to check whether the given location is within the border space
+    let check_within_border =
+        |location: u32| -> bool { location < self.border || location >= self.border + self.scale};
+
+    // iterate over the coordinates and pixels of the image
+    for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
+        if check_within_border(x) || check_within_border(y) {
+            *pixel = image::Rgb([
+                background_color.red,
+                background_color.green,
+                background_color.blue,
+            ]);
+        } else {
+            *pixel = base_image
+                .get_pixel(x - self.border, y - self.border)
+                .clone();
+        }
+    }
+
+    DynamicImage::ImageRgb8(imgbuf)
     }
 
     pub fn save_image(&self, output_filename: &str) {
-        self.generate_image().resize(self.scale, self.scale, FilterType::Nearest).save(output_filename).unwrap();
+        self.generate_image().save(output_filename).unwrap();
     }
 }
-
-// pub fn generate_scaled_image(input_value: &str, scale: u32) -> DynamicImage {
-//     generate_image(input_value).resize(scale, scale, FilterType::Nearest)
-// }
-//
-// pub fn generate_bordered_image(input_value: &str, scale: u32, border_width: u32) -> DynamicImage {
-//     let background_color = get_background_color();
-//     let base_image = generate_scaled_image(input_value, scale).to_rgb();
-//
-//     let image_size = base_image.width() + (border_width * 2);
-//
-//     // create a new ImgBuf with width: imgx and height: imgy
-//     let mut imgbuf = ImageBuffer::new(image_size, image_size);
-//
-//     // create a clojure to check whether the given location is within the border space
-//     let check_within_border =
-//         |location: u32| -> bool { location < border_width || location >= border_width + scale };
-//
-//     // iterate over the coordinates and pixels of the image
-//     for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-//         if check_within_border(x) || check_within_border(y) {
-//             *pixel = image::Rgb([
-//                 background_color.red,
-//                 background_color.green,
-//                 background_color.blue,
-//             ]);
-//         } else {
-//             *pixel = base_image
-//                 .get_pixel(x - border_width, y - border_width)
-//                 .clone();
-//         }
-//     }
-//
-//     DynamicImage::ImageRgb8(imgbuf)
-// }
-//
-// pub fn save_scaled_image(input_value: &str, output_filename: &str, scale: u32) {
-//     generate_scaled_image(input_value, scale)
-//         .save(output_filename)
-//         .unwrap();
-// }
-//
-// pub fn save_bordered_image(
-//     input_value: &str,
-//     output_filename: &str,
-//     scale: u32,
-//     border_width: u32,
-// ) {
-//     generate_bordered_image(input_value, scale, border_width)
-//         .save(output_filename)
-//         .unwrap();
-// }
 
 #[cfg(test)]
 mod tests {
@@ -151,23 +127,25 @@ mod tests {
         assert_eq!(2 + 2, 4);
     }
 
-    // #[test]
-    // fn trim_of_input_works() {
-    //     let image_normal = crate::generate_image("test");
-    //     let image_padded = crate::generate_image("  test  ");
-    //     assert_eq!(
-    //         image_normal.to_rgb().into_raw(),
-    //         image_padded.to_rgb().into_raw()
-    //     );
-    // }
-    //
-    // #[test]
-    // fn trim_of_input_failure_works() {
-    //     let image_normal = crate::generate_image("test");
-    //     let image_padded = crate::generate_image("  test1  ");
-    //     assert_ne!(
-    //         image_normal.to_rgb().into_raw(),
-    //         image_padded.to_rgb().into_raw()
-    //     );
-    // }
+    use crate::Identicon;
+
+    #[test]
+    fn trim_of_input_works() {
+        let image_normal = Identicon::new_default("test").generate_image();
+        let image_padded = Identicon::new_default("  test  ").generate_image();
+        assert_eq!(
+            image_normal.to_rgb().into_raw(),
+            image_padded.to_rgb().into_raw()
+        );
+    }
+
+    #[test]
+    fn trim_of_input_failure_works() {
+        let image_normal = Identicon::new_default("test").generate_image();
+        let image_padded = Identicon::new_default("  test1  ").generate_image();
+        assert_ne!(
+            image_normal.to_rgb().into_raw(),
+            image_padded.to_rgb().into_raw()
+        );
+    }
 }
