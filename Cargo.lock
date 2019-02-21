@@ -155,7 +155,7 @@ dependencies = [
 
 [[package]]
 name = "identicon-rs"
-version = "1.0.1"
+version = "1.0.2"
 dependencies = [
  "image 0.21.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "palette 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
