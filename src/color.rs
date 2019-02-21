@@ -1,12 +1,9 @@
-use sha2::{Digest, Sha512};
-
 use palette::{Hsl, LinSrgb};
 
 use crate::map_values::map_values;
 
-pub fn generate_color(input_value: &str) -> LinSrgb<u8> {
+pub fn generate_color(hash: &Vec<u8>) -> LinSrgb<u8> {
     // compute hash for hue space in larger bitspace
-    let hash = Sha512::digest(input_value.as_bytes());
     let hue_hash_1 = (hash[0] as u16 & 0x0f) << 8;
     let hue_hash_2 = hash[1] as u16;
     let hue_hash = (hue_hash_1 | hue_hash_2) as u32;
