@@ -10,7 +10,7 @@ mod map_values;
 pub enum Symmetry {
     None,
     X,
-    Y
+    Y,
 }
 
 pub struct Identicon {
@@ -19,11 +19,18 @@ pub struct Identicon {
     border: u32,
     size: u32,
     scale: u32,
-    background_color: (u8, u8, u8)
+    background_color: (u8, u8, u8),
 }
 
 impl Identicon {
-    pub fn new(input_value: &str, symmetry: Symmetry, border: u32, size: u32, scale: u32, background_color: (u8, u8, u8)) -> Identicon {
+    pub fn new(
+        input_value: &str,
+        symmetry: Symmetry,
+        border: u32,
+        size: u32,
+        scale: u32,
+        background_color: (u8, u8, u8),
+    ) -> Identicon {
         let input_trimmed = input_value.trim();
         let hash = Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec();
 
@@ -33,7 +40,7 @@ impl Identicon {
             border,
             size,
             scale,
-            background_color
+            background_color,
         }
     }
 
@@ -48,7 +55,7 @@ impl Identicon {
             border: 50,
             size: 5,
             scale: 500,
-            background_color: (background_color, background_color, background_color)
+            background_color: (background_color, background_color, background_color),
         }
     }
 
@@ -63,7 +70,7 @@ impl Identicon {
             border: 0,
             size: 5,
             scale: 500,
-            background_color: (background_color, background_color, background_color)
+            background_color: (background_color, background_color, background_color),
         }
     }
 
@@ -91,9 +98,9 @@ impl Identicon {
                 *pixel = image::Rgb([color.red, color.green, color.blue]);
             } else {
                 *pixel = image::Rgb([
-                                    background_color.red,
-                                    background_color.green,
-                                    background_color.blue,
+                    background_color.red,
+                    background_color.green,
+                    background_color.blue,
                 ]);
             }
         }
@@ -110,16 +117,17 @@ impl Identicon {
             let mut imgbuf = ImageBuffer::new(size, size);
 
             // create a clojure to check whether the given location is within the border space
-            let check_within_border =
-                |location: u32| -> bool { location < self.border || location >= self.border + self.scale};
+            let check_within_border = |location: u32| -> bool {
+                location < self.border || location >= self.border + self.scale
+            };
 
             // iterate over the coordinates and pixels of the image
             for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
                 if check_within_border(x) || check_within_border(y) {
                     *pixel = image::Rgb([
-                                        background_color.red,
-                                        background_color.green,
-                                        background_color.blue,
+                        background_color.red,
+                        background_color.green,
+                        background_color.blue,
                     ]);
                 } else {
                     *pixel = base_image
