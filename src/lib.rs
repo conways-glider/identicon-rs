@@ -13,6 +13,9 @@ pub enum Symmetry {
     Y,
 }
 
+/// Generic Identicon struct
+///
+/// This is the base struct to be used
 pub struct Identicon {
     hash: Vec<u8>,
     symmetry: Symmetry,
@@ -23,6 +26,7 @@ pub struct Identicon {
 }
 
 impl Identicon {
+    /// Generates a new identicon with all given parameters
     pub fn new(
         input_value: &str,
         symmetry: Symmetry,
@@ -44,6 +48,14 @@ impl Identicon {
         }
     }
 
+    /// Generates a new identicon with base library defaults
+    ///
+    /// The defaults are:
+    /// - symmetry: Symmetry::None
+    /// - border: 50
+    /// - size: 5
+    /// - scale: 500
+    /// - background_color: (240, 240, 240)
     pub fn new_default(input_value: &str) -> Identicon {
         let input_trimmed = input_value.trim();
         let hash = Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec();
@@ -59,6 +71,14 @@ impl Identicon {
         }
     }
 
+    /// Generates a new identicon with the defaults with no border
+    ///
+    /// The defaults are:
+    /// - symmetry: Symmetry::None
+    /// - border: 0
+    /// - size: 5
+    /// - scale: 500
+    /// - background_color: (240, 240, 240)
     pub fn new_no_border(input_value: &str) -> Identicon {
         let input_trimmed = input_value.trim();
         let hash = Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec();
@@ -113,6 +133,7 @@ impl Identicon {
         DynamicImage::ImageRgb8(imgbuf).resize(self.scale, self.scale, FilterType::Nearest)
     }
 
+    /// Generates the DynamicImage representing the Identicon
     pub fn generate_image(&self) -> DynamicImage {
         if self.border > 0 {
             let base_image = self.generate_base_image().to_rgb();
@@ -149,6 +170,9 @@ impl Identicon {
         }
     }
 
+    /// Saves the generated image to the given filename
+    ///
+    /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work
     pub fn save_image(&self, output_filename: &str) {
         self.generate_image().save(output_filename).unwrap();
     }

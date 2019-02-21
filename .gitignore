@@ -4,3 +4,7 @@
 # Prevents the test image
 test.png
 output*.png
+output*.jpg
+output*.jpeg
+output*.ico
+output*.bmp
