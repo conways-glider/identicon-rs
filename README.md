@@ -3,7 +3,6 @@
 This is an Identicon implementation in rust.
 
 ## TODO
-- remove dependency on rand crate
 - investigate removal of palette crate
 - move functions into an object that stores the generated data, along with the input data
 - build a rust cli using this
