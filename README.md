@@ -25,5 +25,4 @@ fn main() {
 - **add more examples**
 - prevent second image generation loop due to borders
 - build a rust cli using this
-- build a rust server (using actix?) to publish images
 - build an npm/wasm package using this
