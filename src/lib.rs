@@ -15,7 +15,7 @@ pub enum Symmetry {
 
 /// Generic Identicon struct
 ///
-/// This is the base struct to be used
+/// This is the base struct to be used.
 pub struct Identicon {
     hash: Vec<u8>,
     symmetry: Symmetry,
@@ -172,11 +172,15 @@ impl Identicon {
 
     /// Saves the generated image to the given filename
     ///
-    /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work
+    /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work.
     pub fn save_image(&self, output_filename: &str) {
         self.generate_image().save(output_filename).unwrap();
     }
 
+    /// Export the file buffer as a Vec<u8>
+    ///
+    /// This is for creating a file for a buffer or network response without creating a file on the
+    /// filesystem.
     pub fn export_file_data(&self) -> Vec<u8> {
         let image = self.generate_image();
         let image_size = image.to_rgb().width();

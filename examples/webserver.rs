@@ -6,9 +6,7 @@ fn index(req: &HttpRequest) -> HttpResponse {
     let identicon_fluffy = Identicon::new_default(&input_string[..]);
     let file = identicon_fluffy.export_file_data();
 
-    HttpResponse::Ok()
-        .content_type("image/png")
-        .body(file)
+    HttpResponse::Ok().content_type("image/png").body(file)
 }
 
 fn main() {
