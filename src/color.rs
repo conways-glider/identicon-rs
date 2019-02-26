@@ -10,12 +10,10 @@ pub fn generate_color(hash: &Vec<u8>) -> LinSrgb<u8> {
 
     // compute hsl values
     let hue = map_values(hue_hash, 0, 4095, 0, 360);
-    let saturation = map_values(hash[2] as u32, 0, 255, 25, 95) / 100.0;
-    let lightness = map_values(hash[3] as u32, 0, 255, 75, 85) / 100.0;
+    let saturation = map_values(hash[2] as u32, 0, 255, 50, 75) / 100.0;
+    let lightness = map_values(hash[3] as u32, 0, 255, 60, 70) / 100.0;
 
     // convert color to rgb value
     let color_hsl = Hsl::new(hue, saturation, lightness);
-    let color_rgb = LinSrgb::from(color_hsl).into_format();
-
-    color_rgb
+    LinSrgb::from(color_hsl).into_format()
 }

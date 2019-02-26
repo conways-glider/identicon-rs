@@ -1,4 +1,4 @@
-use image::{DynamicImage, FilterType, ImageBuffer};
+use image::{png::PNGEncoder, DynamicImage, FilterType, ImageBuffer};
 use sha2::{Digest, Sha512};
 
 use palette::LinSrgb;
@@ -175,6 +175,21 @@ impl Identicon {
     /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work
     pub fn save_image(&self, output_filename: &str) {
         self.generate_image().save(output_filename).unwrap();
+    }
+
+    pub fn export_file_data(&self) -> Vec<u8> {
+        let image = self.generate_image();
+        let image_size = image.to_rgb().width();
+        let mut file = Vec::new();
+        PNGEncoder::new(&mut file)
+            .encode(
+                image.to_rgb().into_raw().as_slice(),
+                image_size,
+                image_size,
+                image::RGB(8),
+            )
+            .unwrap();
+        file
     }
 }
 
