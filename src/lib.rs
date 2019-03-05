@@ -35,8 +35,7 @@ impl Identicon {
         scale: u32,
         background_color: (u8, u8, u8),
     ) -> Identicon {
-        let input_trimmed = input_value.trim();
-        let hash = Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec();
+        let hash = Identicon::get_hash_value(input_value);
 
         Identicon {
             hash,
@@ -57,8 +56,7 @@ impl Identicon {
     /// - scale: 500
     /// - background_color: (240, 240, 240)
     pub fn new_default(input_value: &str) -> Identicon {
-        let input_trimmed = input_value.trim();
-        let hash = Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec();
+        let hash = Identicon::get_hash_value(input_value);
         let background_color = 240;
 
         Identicon {
@@ -80,8 +78,7 @@ impl Identicon {
     /// - scale: 500
     /// - background_color: (240, 240, 240)
     pub fn new_no_border(input_value: &str) -> Identicon {
-        let input_trimmed = input_value.trim();
-        let hash = Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec();
+        let hash = Identicon::get_hash_value(input_value);
         let background_color = 240;
 
         Identicon {
@@ -92,6 +89,11 @@ impl Identicon {
             scale: 500,
             background_color: (background_color, background_color, background_color),
         }
+    }
+
+    fn get_hash_value(input_value: &str) -> Vec<u8> {
+        let input_trimmed = input_value.trim();
+        Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec()
     }
 
     fn get_background_color(&self) -> LinSrgb<u8> {
