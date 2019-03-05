@@ -24,5 +24,6 @@ fn main() {
 - **add more information to README.md**
 - **add more examples**
 - prevent second image generation loop due to borders
+- catch file extensions in the input value
 - build a rust cli using this
 - build an npm/wasm package using this
