@@ -20,6 +20,7 @@ fn main() {
 ```
 
 ## TODO
+- **add symmetry option for image generation**
 - **add documentation to code**
 - **add more information to README.md**
 - **add more examples**
