@@ -1,4 +1,4 @@
-use image::{png::PNGEncoder, DynamicImage, FilterType, ImageBuffer};
+use image::{png::PNGEncoder, DynamicImage, ImageBuffer};
 use sha2::{Digest, Sha512};
 
 use palette::LinSrgb;
