@@ -101,18 +101,24 @@ impl Identicon {
         LinSrgb::new(background_color.0, background_color.1, background_color.2)
     }
 
-    fn generate_base_image(&self) -> DynamicImage {
-        let background_color = self.get_background_color();
-
-        let color = color::generate_color(&self.hash);
+    /// Generates the DynamicImage representing the Identicon
+    pub fn generate_image(&self) -> DynamicImage {
+        let size = self.scale + self.border * 2;
 
         // create a new ImgBuf with width: imgx and height: imgy
-        let mut imgbuf = ImageBuffer::new(self.size, self.size);
+        let mut imgbuf = ImageBuffer::new(size, size);
 
         // create a new grid
         let grid = grid::generate_full_grid(self.size, &self.hash);
 
+        // create a clojure to check whether the given location is within the border space
+        let check_within_border = |location: u32| -> bool {
+            location < self.border || location >= self.border + self.scale
+        };
+
         // create pixel objects
+        let color = color::generate_color(&self.hash);
+        let background_color = self.get_background_color();
         let pixel_active = image::Rgb([color.red, color.green, color.blue]);
         let pixel_background = image::Rgb([
             background_color.red,
@@ -122,54 +128,25 @@ impl Identicon {
 
         // iterate over the coordinates and pixels of the image
         for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-            let count = x + y * self.size % self.size.pow(2);
-
-            if grid[count as usize] {
-                *pixel = pixel_active;
-            } else {
+            if check_within_border(x) || check_within_border(y) {
                 *pixel = pixel_background;
-            }
-        }
+            } else {
+                // get location within the generated grid
+                let location_scale = self.scale / self.size;
+                let x_location = (x - self.border) / location_scale;
+                let y_location = (y - self.border) / location_scale;
+                let grid_location = (x_location + y_location * self.size) % self.size.pow(2);
 
-        // return the image
-        DynamicImage::ImageRgb8(imgbuf).resize(self.scale, self.scale, FilterType::Nearest)
-    }
-
-    /// Generates the DynamicImage representing the Identicon
-    pub fn generate_image(&self) -> DynamicImage {
-        if self.border > 0 {
-            let base_image = self.generate_base_image().to_rgb();
-            let background_color = self.get_background_color();
-            let size = self.scale + self.border * 2;
-            let mut imgbuf = ImageBuffer::new(size, size);
-
-            // create a clojure to check whether the given location is within the border space
-            let check_within_border = |location: u32| -> bool {
-                location < self.border || location >= self.border + self.scale
-            };
-
-            // create pixel objects
-            let pixel_background = image::Rgb([
-                background_color.red,
-                background_color.green,
-                background_color.blue,
-            ]);
-
-            // iterate over the coordinates and pixels of the image
-            for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-                if check_within_border(x) || check_within_border(y) {
-                    *pixel = pixel_background;
+                // set the pixel color based on the value within the grid at the given position
+                if grid[grid_location as usize] {
+                    *pixel = pixel_active;
                 } else {
-                    *pixel = base_image
-                        .get_pixel(x - self.border, y - self.border)
-                        .clone();
+                    *pixel = pixel_background;
                 }
             }
-
-            DynamicImage::ImageRgb8(imgbuf)
-        } else {
-            self.generate_base_image()
         }
+
+        DynamicImage::ImageRgb8(imgbuf)
     }
 
     /// Saves the generated image to the given filename
