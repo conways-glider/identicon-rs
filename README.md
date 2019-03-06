@@ -28,6 +28,5 @@ fn main() {
 - **add documentation to code**
 - **add more information to README.md**
 - **add more examples**
-- catch file extensions in the input value
 - build a rust cli using this
 - build an npm/wasm package using this
