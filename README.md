@@ -1,4 +1,8 @@
-# Identicon
+# Identicon-rs
+
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/fluffy-samurai/identicon-rs/blob/master/LICENSE)
+[![Build Status](https://travis-ci.com/fluffy-samurai/identicon-rs.svg?branch=master)](https://travis-ci.com/fluffy-samurai/identicon-rs)
+[![dependency status](https://deps.rs/crate/identicon-rs/1.2.1/status.svg)](https://deps.rs/crate/identicon-rs/1.2.1)
 
 This is an Identicon implementation in rust.
 
@@ -20,10 +24,10 @@ fn main() {
 ```
 
 ## TODO
+- **add symmetry option for image generation**
 - **add documentation to code**
 - **add more information to README.md**
 - **add more examples**
-- prevent second image generation loop due to borders
 - catch file extensions in the input value
 - build a rust cli using this
 - build an npm/wasm package using this
