@@ -1,7 +1,7 @@
 # Identicon-rs
 
 ![](https://github.com/fluffy-samurai/identicon-rs/workflows/CI%20Pipeline/badge.svg)
-[![dependency status](https://deps.rs/crate/identicon-rs/1.2.1/status.svg)](https://deps.rs/crate/identicon-rs/1.2.1)
+[![dependency status](https://deps.rs/crate/identicon-rs/1.4.0/status.svg)](https://deps.rs/crate/identicon-rs/1.4.0)
 
 This is an Identicon implementation in rust.
 

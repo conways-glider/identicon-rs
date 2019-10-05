@@ -1,6 +1,6 @@
 [package]
 name = "identicon-rs"
-version = "1.3.0"
+version = "1.4.0"
 authors = ["Nia Watts <niawatts95@gmail.com>"]
 edition = "2018"
 readme = "README.md"
@@ -16,7 +16,6 @@ categories = ["graphics", "multimedia::images", "value-formatting", "visualizati
 
 [dependencies]
 image = "0.22.0"
-# num-complex = "0.2.1"
 sha2 = "0.8.0"
 palette = "0.4.1"
 
