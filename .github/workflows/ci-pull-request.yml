@@ -1,5 +1,5 @@
-name: Test Pull Request
-on: [pull_request]
+name: Test
+on: [push]
 
 jobs:
   build:
@@ -10,5 +10,19 @@ jobs:
           fetch-depth: 1
       - name: Build
         run: cargo build --verbose
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
       - name: Test
         run: cargo test --verbose
+  format check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Test
+        run: cargo fmt -- --check

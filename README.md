@@ -1,7 +1,7 @@
 # Identicon-rs
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/fluffy-samurai/identicon-rs/blob/master/LICENSE)
-[![Build Status](https://travis-ci.com/fluffy-samurai/identicon-rs.svg?branch=master)](https://travis-ci.com/fluffy-samurai/identicon-rs)
+![](https://github.com/fluffy-samurai/identicon-rs/workflows/Test/badge.svg)
 [![dependency status](https://deps.rs/crate/identicon-rs/1.2.1/status.svg)](https://deps.rs/crate/identicon-rs/1.2.1)
 
 This is an Identicon implementation in rust.
