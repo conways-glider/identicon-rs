@@ -15,10 +15,10 @@ keywords = ["image", "identicon", "avatar"]
 categories = ["graphics", "multimedia::images", "value-formatting", "visualization"]
 
 [dependencies]
-image = "0.21.0"
+image = "0.22.0"
 # num-complex = "0.2.1"
 sha2 = "0.8.0"
 palette = "0.4.1"
 
 [dev-dependencies]
-actix-web = "0.7"
+actix-web = "1.0.0"
