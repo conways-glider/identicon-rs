@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 1
       - name: Test
         run: cargo test --verbose
-  format check:
+  format_check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
