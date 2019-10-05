@@ -1,7 +1,7 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use identicon_rs::{Identicon, ImageType};
 
-fn index(path_input: web::Path<String>) -> impl Responder {
+fn generate_png(path_input: web::Path<String>) -> impl Responder {
     let identicon = Identicon::new_default(&path_input);
     let file = identicon.export_file_data(ImageType::PNG);
 
@@ -16,15 +16,16 @@ fn generate_jpeg(path_input: web::Path<String>) -> impl Responder {
 }
 
 fn main() {
+    let address = "127.0.0.1:8088";
     HttpServer::new(|| {
         App::new()
-            .route("/{input_string}.jpeg", |r| r.f(generate_jpeg))
-            .route("/{input_string}.jpg", |r| r.f(generate_jpeg))
-            .route("/{input_string}.png", |r| r.f(generate_png))
+            .route("/{input_string}.jpeg", web::get().to(generate_jpeg))
+            .route("/{input_string}.jpg", web::get().to(generate_jpeg))
+            .route("/{input_string}.png", web::get().to(generate_png))
             .route("/{input_string}", web::get().to(generate_png))
     })
-    .bind("127.0.0.1:8088")
-    .unwrap()
+    .bind(address)
+    .expect("Cannot bind to address")
     .run()
     .unwrap();
 }
