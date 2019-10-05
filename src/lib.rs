@@ -7,18 +7,11 @@ mod color;
 mod grid;
 mod map_values;
 
-pub enum Symmetry {
-    None,
-    X,
-    Y,
-}
-
 /// Generic Identicon struct
 ///
 /// This is the base struct to be used.
 pub struct Identicon {
     hash: Vec<u8>,
-    symmetry: Symmetry,
     border: u32,
     size: u32,
     scale: u32,
@@ -29,7 +22,6 @@ impl Identicon {
     /// Generates a new identicon with all given parameters
     pub fn new(
         input_value: &str,
-        symmetry: Symmetry,
         border: u32,
         size: u32,
         scale: u32,
@@ -39,7 +31,6 @@ impl Identicon {
 
         Identicon {
             hash,
-            symmetry,
             border,
             size,
             scale,
@@ -50,7 +41,6 @@ impl Identicon {
     /// Generates a new identicon with base library defaults
     ///
     /// The defaults are:
-    /// - symmetry: Symmetry::None
     /// - border: 50
     /// - size: 5
     /// - scale: 500
@@ -61,7 +51,6 @@ impl Identicon {
 
         Identicon {
             hash,
-            symmetry: Symmetry::None,
             border: 50,
             size: 5,
             scale: 500,
@@ -72,7 +61,6 @@ impl Identicon {
     /// Generates a new identicon with the defaults with no border
     ///
     /// The defaults are:
-    /// - symmetry: Symmetry::None
     /// - border: 0
     /// - size: 5
     /// - scale: 500
@@ -83,7 +71,6 @@ impl Identicon {
 
         Identicon {
             hash,
-            symmetry: Symmetry::None,
             border: 0,
             size: 5,
             scale: 500,
