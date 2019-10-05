@@ -1,6 +1,5 @@
 # Identicon-rs
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/fluffy-samurai/identicon-rs/blob/master/LICENSE)
 ![](https://github.com/fluffy-samurai/identicon-rs/workflows/CI%20Pipeline/badge.svg)
 [![dependency status](https://deps.rs/crate/identicon-rs/1.2.1/status.svg)](https://deps.rs/crate/identicon-rs/1.2.1)
 
@@ -24,10 +23,6 @@ fn main() {
 ```
 
 ## TODO
-- **add symmetry option for image generation**
-- **add documentation to code**
 - **add more information to README.md**
 - **add more examples**
 - catch file extensions in the input value
-- build a rust cli using this
-- build an npm/wasm package using this
