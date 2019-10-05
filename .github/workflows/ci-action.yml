@@ -16,13 +16,13 @@ jobs:
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
-      - name: Test
+      - name: test
         run: cargo test --verbose
-  format_check:
+  check_format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
-      - name: Test
+      - name: check format
         run: cargo fmt -- --check
