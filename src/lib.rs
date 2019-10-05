@@ -7,8 +7,11 @@ mod color;
 mod grid;
 mod map_values;
 
+/// Represents available image types
 pub enum ImageType {
+    /// PNG file type
     PNG,
+    /// JPEG or JPG file type
     JPEG,
 }
 
