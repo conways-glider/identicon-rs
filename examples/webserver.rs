@@ -16,14 +16,15 @@ fn generate_jpeg(path_input: web::Path<String>) -> impl Responder {
 }
 
 fn main() {
-    HttpServer::new(|| App::new()
-        .route("/{input_string}.jpeg", |r| r.f(generate_jpeg))
-        .route("/{input_string}.jpg", |r| r.f(generate_jpeg))
-        .route("/{input_string}.png", |r| r.f(generate_png))
-        .route("/{input_string}", web::get().to(generate_png))
-    )
-        .bind("127.0.0.1:8088")
-        .unwrap()
-        .run()
-        .unwrap();
+    HttpServer::new(|| {
+        App::new()
+            .route("/{input_string}.jpeg", |r| r.f(generate_jpeg))
+            .route("/{input_string}.jpg", |r| r.f(generate_jpeg))
+            .route("/{input_string}.png", |r| r.f(generate_png))
+            .route("/{input_string}", web::get().to(generate_png))
+    })
+    .bind("127.0.0.1:8088")
+    .unwrap()
+    .run()
+    .unwrap();
 }
