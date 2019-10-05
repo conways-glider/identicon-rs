@@ -23,6 +23,5 @@ fn main() {
 ```
 
 ## TODO
-- **add more information to README.md**
-- **add more examples**
-- catch file extensions in the input value
+- add more information to README.md
+- add more examples

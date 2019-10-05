@@ -1,4 +1,4 @@
-use image::{png::PNGEncoder, DynamicImage, ImageBuffer};
+use image::{jpeg::JPEGEncoder, png::PNGEncoder, DynamicImage, ImageBuffer};
 use sha2::{Digest, Sha512};
 
 use palette::LinSrgb;
@@ -6,6 +6,14 @@ use palette::LinSrgb;
 mod color;
 mod grid;
 mod map_values;
+
+/// Represents available image types
+pub enum ImageType {
+    /// PNG file type
+    PNG,
+    /// JPEG or JPG file type
+    JPEG,
+}
 
 /// Generic Identicon struct
 ///
@@ -147,18 +155,29 @@ impl Identicon {
     ///
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
-    pub fn export_file_data(&self) -> Vec<u8> {
+    pub fn export_file_data(&self, image_type: ImageType) -> Vec<u8> {
         let image = self.generate_image();
         let image_size = image.to_rgb().width();
         let mut file = Vec::new();
-        PNGEncoder::new(&mut file)
-            .encode(
-                image.to_rgb().into_raw().as_slice(),
-                image_size,
-                image_size,
-                image::RGB(8),
-            )
-            .unwrap();
+
+        match image_type {
+            ImageType::PNG => PNGEncoder::new(&mut file)
+                .encode(
+                    image.to_rgb().into_raw().as_slice(),
+                    image_size,
+                    image_size,
+                    image::RGB(8),
+                )
+                .unwrap(),
+            ImageType::JPEG => JPEGEncoder::new(&mut file)
+                .encode(
+                    image.to_rgb().into_raw().as_slice(),
+                    image_size,
+                    image_size,
+                    image::RGB(8),
+                )
+                .unwrap(),
+        }
         file
     }
 }
