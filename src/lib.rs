@@ -56,7 +56,7 @@ impl Identicon {
     /// - size: 5
     /// - scale: 500
     /// - background_color: (240, 240, 240)
-    pub fn new_default<S>(input_value: &str) -> Identicon
+    pub fn new_default<S>(input_value: S) -> Identicon
     where
         S: Into<String>,
     {
@@ -79,7 +79,7 @@ impl Identicon {
     /// - size: 5
     /// - scale: 500
     /// - background_color: (240, 240, 240)
-    pub fn new_no_border<S>(input_value: &str) -> Identicon
+    pub fn new_no_border<S>(input_value: S) -> Identicon
     where
         S: Into<String>,
     {
