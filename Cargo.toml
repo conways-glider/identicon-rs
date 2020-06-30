@@ -1,6 +1,6 @@
 [package]
 name = "identicon-rs"
-version = "0.3.0"
+version = "1.4.1"
 authors = ["Nia Watts <niawatts95@gmail.com>"]
 edition = "2018"
 readme = "README.md"
@@ -14,9 +14,20 @@ license = "MIT OR Apache-2.0"
 keywords = ["image", "identicon", "avatar"]
 categories = ["graphics", "multimedia::images", "value-formatting", "visualization"]
 
+include = [
+    "Cargo.toml",
+    "README.md",
+    "src/**",
+    "examples/**",
+    "LICENSE-APACHE",
+    "LICENSE-MIT",
+
+]
+
+
 [dependencies]
-image = "0.22.0"
-sha2 = "0.8.0"
+image = "0.22.5"
+sha2 = "0.8.2"
 palette = "0.4.1"
 
 [dev-dependencies]
