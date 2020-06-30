@@ -1,7 +1,7 @@
 # Identicon-rs
 
 ![](https://github.com/fluffy-samurai/identicon-rs/workflows/CI%20Pipeline/badge.svg)
-[![dependency status](https://deps.rs/crate/identicon-rs/0.3.0/status.svg)](https://deps.rs/crate/identicon-rs/0.3.0)
+[![dependency status](https://deps.rs/crate/identicon-rs/1.4.1/status.svg)](https://deps.rs/crate/identicon-rs/1.4.1)
 
 This is an Identicon implementation in rust.
 
@@ -21,6 +21,10 @@ fn main() {
     Identicon::new_no_border(test_string).save_image("output_2.png");
 }
 ```
+
+You can run this example with `cargo run --example main`.
+
+The repository contains an example webservice that you can run with `cargo run --example webserver`.
 
 ## TODO
 - add more information to README.md
