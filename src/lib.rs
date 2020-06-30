@@ -28,17 +28,14 @@ pub struct Identicon {
 
 impl Identicon {
     /// Generates a new identicon with all given parameters
-    pub fn new<S>(
-        input_value: S,
+    pub fn new(
+        input_value: &str,
         border: u32,
         size: u32,
         scale: u32,
         background_color: (u8, u8, u8),
-    ) -> Identicon
-    where
-        S: Into<String>,
-    {
-        let hash = Identicon::get_hash_value(input_value.into());
+    ) -> Identicon {
+        let hash = Identicon::get_hash_value(input_value);
 
         Identicon {
             hash,
@@ -56,11 +53,8 @@ impl Identicon {
     /// - size: 5
     /// - scale: 500
     /// - background_color: (240, 240, 240)
-    pub fn new_default<S>(input_value: S) -> Identicon
-    where
-        S: Into<String>,
-    {
-        let hash = Identicon::get_hash_value(input_value.into());
+    pub fn new_default(input_value: &str) -> Identicon {
+        let hash = Identicon::get_hash_value(input_value);
         let background_color = 240;
 
         Identicon {
@@ -79,11 +73,8 @@ impl Identicon {
     /// - size: 5
     /// - scale: 500
     /// - background_color: (240, 240, 240)
-    pub fn new_no_border<S>(input_value: S) -> Identicon
-    where
-        S: Into<String>,
-    {
-        let hash = Identicon::get_hash_value(input_value.into());
+    pub fn new_no_border(input_value: &str) -> Identicon {
+        let hash = Identicon::get_hash_value(input_value);
         let background_color = 240;
 
         Identicon {
@@ -95,7 +86,7 @@ impl Identicon {
         }
     }
 
-    fn get_hash_value(input_value: String) -> Vec<u8> {
+    fn get_hash_value(input_value: &str) -> Vec<u8> {
         let input_trimmed = input_value.trim();
         Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec()
     }

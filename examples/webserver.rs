@@ -2,14 +2,14 @@ use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use identicon_rs::{Identicon, ImageType};
 
 fn generate_png(path_input: web::Path<String>) -> impl Responder {
-    let identicon = Identicon::new_default(path_input.as_str());
+    let identicon = Identicon::new_default(&path_input);
     let file = identicon.export_file_data(ImageType::PNG);
 
     HttpResponse::Ok().content_type("image/png").body(file)
 }
 
 fn generate_jpeg(path_input: web::Path<String>) -> impl Responder {
-    let identicon = Identicon::new_default(path_input.as_str());
+    let identicon = Identicon::new_default(&path_input);
     let file = identicon.export_file_data(ImageType::JPEG);
 
     HttpResponse::Ok().content_type("image/jpeg").body(file)
