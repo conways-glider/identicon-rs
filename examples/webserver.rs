@@ -16,7 +16,9 @@ fn generate_jpeg(path_input: web::Path<String>) -> impl Responder {
 }
 
 fn main() {
-    let address = "127.0.0.1:8088";
+    let address = "[::1]:8088";
+    println!("Navigate to http://{}/{{input_string}} to see the image", address);
+    
     HttpServer::new(|| {
         App::new()
             .route("/{input_string}.jpeg", web::get().to(generate_jpeg))
