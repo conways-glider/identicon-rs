@@ -6,8 +6,7 @@ pub fn map_values(
     target_max: u32,
 ) -> f32 {
     let slope = (target_max - target_min) as f32 / (input_max - input_min) as f32;
-    let mapped_value = (value - input_min) as f32 * slope + target_min as f32;
-    mapped_value
+    (value - input_min) as f32 * slope + target_min as f32
 }
 
 #[cfg(test)]
