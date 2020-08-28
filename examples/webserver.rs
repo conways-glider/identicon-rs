@@ -3,14 +3,14 @@ use identicon_rs::Identicon;
 use std::io;
 
 fn generate_png(path_input: web::Path<String>) -> Result<impl Responder, io::Error> {
-    let identicon = Identicon::new(&path_input);
+    let identicon = Identicon::new(path_input.as_str());
     let file = identicon.export_png_data()?;
 
     Ok(HttpResponse::Ok().content_type("image/png").body(file))
 }
 
 fn generate_jpeg(path_input: web::Path<String>) -> Result<impl Responder, io::Error> {
-    let identicon = Identicon::new(&path_input);
+    let identicon = Identicon::new(path_input.as_str());
     let file = identicon.export_jpeg_data()?;
 
     Ok(HttpResponse::Ok().content_type("image/jpeg").body(file))

@@ -29,12 +29,16 @@ impl Identicon {
     /// - size: 5
     /// - scale: 500
     /// - background_color: (240, 240, 240)
-    pub fn new(input_value: &str) -> Self {
-        let hash = Identicon::hash_value(input_value);
+    pub fn new<T>(input_value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        let value = input_value.into();
+        let hash = Identicon::hash_value(&value);
         let default_background_color = 240;
 
         Identicon {
-            value: input_value.to_string(),
+            value,
             hash,
             border: 50,
             size: 5,
