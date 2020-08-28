@@ -1,22 +1,23 @@
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use identicon_rs::{Identicon, ImageType};
+use identicon_rs::Identicon;
+use std::io;
 
-fn generate_png(path_input: web::Path<String>) -> impl Responder {
-    let identicon = Identicon::new_default(&path_input);
-    let file = identicon.export_file_data(ImageType::PNG);
+fn generate_png(path_input: web::Path<String>) -> Result<impl Responder, io::Error> {
+    let identicon = Identicon::new(&path_input);
+    let file = identicon.export_png_data()?;
 
-    HttpResponse::Ok().content_type("image/png").body(file)
+    Ok(HttpResponse::Ok().content_type("image/png").body(file))
 }
 
-fn generate_jpeg(path_input: web::Path<String>) -> impl Responder {
-    let identicon = Identicon::new_default(&path_input);
-    let file = identicon.export_file_data(ImageType::JPEG);
+fn generate_jpeg(path_input: web::Path<String>) -> Result<impl Responder, io::Error> {
+    let identicon = Identicon::new(&path_input);
+    let file = identicon.export_jpeg_data()?;
 
-    HttpResponse::Ok().content_type("image/jpeg").body(file)
+    Ok(HttpResponse::Ok().content_type("image/jpeg").body(file))
 }
 
 fn main() {
-    let address = "[::1]:8088";
+    let address = "127.0.0.1:8088";
     println!(
         "Navigate to http://{}/{{input_string}} to see the image",
         address

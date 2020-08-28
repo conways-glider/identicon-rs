@@ -14,7 +14,7 @@ fn main() {
     let test_string = "identicon_rs";
 
     // stored example
-    let identicon_fluffy = Identicon::new_default(&fluffy_samurai);
+    let identicon_fluffy = Identicon::new(&fluffy_samurai);
     identicon_fluffy.save_image("output_1.png");
 
     // chained example with no border
