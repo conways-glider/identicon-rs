@@ -1,8 +1,6 @@
 use image::{jpeg::JPEGEncoder, png::PNGEncoder, DynamicImage, ImageBuffer};
 use sha2::{Digest, Sha512};
 
-use palette::LinSrgb;
-
 mod color;
 pub mod error;
 mod grid;
@@ -89,17 +87,11 @@ impl Identicon {
         };
 
         // create pixel objects
-        let color = color::generate_color(&self.hash);
-        let background_color = LinSrgb::new(
+        let pixel_active = color::generate_color(&self.hash);
+        let pixel_background = image::Rgb([
             self.background_color.0,
             self.background_color.1,
             self.background_color.2,
-        );
-        let pixel_active = image::Rgb([color.red, color.green, color.blue]);
-        let pixel_background = image::Rgb([
-            background_color.red,
-            background_color.green,
-            background_color.blue,
         ]);
 
         // iterate over the coordinates and pixels of the image
