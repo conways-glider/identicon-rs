@@ -13,7 +13,6 @@ mod map_values;
 /// This is the base struct to be used.
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct Identicon {
-    value: String,
     hash: Vec<u8>,
     border: u32,
     size: u32,
@@ -31,14 +30,12 @@ impl Identicon {
     /// - background_color: (240, 240, 240)
     pub fn new<T>(input_value: T) -> Self
     where
-        T: Into<String>,
+        T: AsRef<str>,
     {
-        let value = input_value.into();
-        let hash = Identicon::hash_value(&value);
+        let hash = Identicon::hash_value(input_value.as_ref());
         let default_background_color = 240;
 
         Identicon {
-            value,
             hash,
             border: 50,
             size: 5,
