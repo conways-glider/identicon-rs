@@ -153,7 +153,7 @@ impl Identicon {
                 image_size,
                 image::ColorType::Rgb8,
             )
-            .map_err(|_| error::IdenticonError::SaveImageError)?;
+            .map_err(|_| error::IdenticonError::EncodeImageError)?;
         Ok(buffer)
     }
 
@@ -173,7 +173,7 @@ impl Identicon {
                 image_size,
                 image::ColorType::Rgb8,
             )
-            .map_err(|_| error::IdenticonError::SaveImageError)?;
+            .map_err(|_| error::IdenticonError::EncodeImageError)?;
         Ok(buffer)
     }
 }
