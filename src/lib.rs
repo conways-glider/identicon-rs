@@ -141,9 +141,9 @@ impl Identicon {
     pub fn export_png_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
         let image = self.generate_image();
         let image_size = image.to_rgb().width();
-        let mut file = Vec::new();
+        let mut buffer = Vec::new();
 
-        PNGEncoder::new(&mut file)
+        PNGEncoder::new(&mut buffer)
             .encode(
                 image.to_rgb().into_raw().as_slice(),
                 image_size,
@@ -151,7 +151,7 @@ impl Identicon {
                 image::ColorType::Rgb8,
             )
             .map_err(|_| error::IdenticonError::SaveImageError)?;
-        Ok(file)
+        Ok(buffer)
     }
 
     /// Export a JPEG file buffer as a Vec<u8>
@@ -161,9 +161,9 @@ impl Identicon {
     pub fn export_jpeg_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
         let image = self.generate_image();
         let image_size = image.to_rgb().width();
-        let mut file = Vec::new();
+        let mut buffer = Vec::new();
 
-        JPEGEncoder::new(&mut file)
+        JPEGEncoder::new(&mut buffer)
             .encode(
                 image.to_rgb().into_raw().as_slice(),
                 image_size,
@@ -171,7 +171,7 @@ impl Identicon {
                 image::ColorType::Rgb8,
             )
             .map_err(|_| error::IdenticonError::SaveImageError)?;
-        Ok(file)
+        Ok(buffer)
     }
 }
 
