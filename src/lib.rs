@@ -18,8 +18,19 @@ pub struct Identicon {
     background_color: (u8, u8, u8),
 }
 
+/// Generates a new identicon
+/// This is a wrapper around [`identicon_rs::Identicon::new`]
+///
+/// [`identicon_rs::Identicon::new`]: struct.Identicon.html#method.new
+pub fn new<T>(input_value: T) -> Identicon
+where
+    T: AsRef<str>,
+{
+    Identicon::new(input_value)
+}
+
 impl Identicon {
-    /// Generates a new identicon with all given parameters
+    /// Generates a new identicon
     ///
     /// The defaults are:
     /// - border: 50
