@@ -1,7 +1,7 @@
 use identicon_rs::Identicon;
-use std::io;
+use identicon_rs::error::IdenticonError;
 
-fn main() -> Result<(), io::Error> {
+fn main() -> Result<(), IdenticonError> {
     let fluffy_samurai = String::from("fluffy-samurai");
     let test_string = "identicon_rs";
 

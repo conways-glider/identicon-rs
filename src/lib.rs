@@ -2,9 +2,9 @@ use image::{jpeg::JPEGEncoder, png::PNGEncoder, DynamicImage, ImageBuffer};
 use sha2::{Digest, Sha512};
 
 use palette::LinSrgb;
-use std::io;
 
 mod color;
+pub mod error;
 mod grid;
 mod map_values;
 
@@ -131,15 +131,15 @@ impl Identicon {
     /// Saves the generated image to the given filename
     ///
     /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work.
-    pub fn save_image(&self, output_filename: &str) -> io::Result<()> {
-        self.generate_image().save(output_filename)
+    pub fn save_image(&self, output_filename: &str) -> Result<(), error::IdenticonError> {
+        self.generate_image().save(output_filename).map_err(|_| error::IdenticonError::SaveImageError)
     }
 
     /// Export a PNG file buffer as a Vec<u8>
     ///
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
-    pub fn export_png_data(&self) -> Result<Vec<u8>, io::Error> {
+    pub fn export_png_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
         let image = self.generate_image();
         let image_size = image.to_rgb().width();
         let mut file = Vec::new();
@@ -148,8 +148,8 @@ impl Identicon {
             image.to_rgb().into_raw().as_slice(),
             image_size,
             image_size,
-            image::RGB(8),
-        )?;
+            image::ColorType::Rgb8,
+        ).map_err(|_| error::IdenticonError::SaveImageError)?;
         Ok(file)
     }
 
@@ -157,7 +157,7 @@ impl Identicon {
     ///
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
-    pub fn export_jpeg_data(&self) -> Result<Vec<u8>, io::Error> {
+    pub fn export_jpeg_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
         let image = self.generate_image();
         let image_size = image.to_rgb().width();
         let mut file = Vec::new();
@@ -166,8 +166,8 @@ impl Identicon {
             image.to_rgb().into_raw().as_slice(),
             image_size,
             image_size,
-            image::RGB(8),
-        )?;
+            image::ColorType::Rgb8,
+        ).map_err(|_| error::IdenticonError::SaveImageError)?;
         Ok(file)
     }
 }
