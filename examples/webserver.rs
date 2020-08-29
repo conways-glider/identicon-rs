@@ -1,4 +1,4 @@
-use actix_web::{web, App, HttpRequest, HttpServer, Responder, HttpResponse};
+use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use identicon_rs::Identicon;
 
 async fn generate_png(req: HttpRequest) -> impl Responder {
@@ -31,7 +31,7 @@ async fn main() -> std::io::Result<()> {
             .route("/{name}.jpg", web::get().to(generate_jpeg))
             .route("/{name}.jpeg", web::get().to(generate_jpeg))
     })
-        .bind(address)?
-        .run()
-        .await
+    .bind(address)?
+    .run()
+    .await
 }

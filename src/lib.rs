@@ -132,7 +132,9 @@ impl Identicon {
     ///
     /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work.
     pub fn save_image(&self, output_filename: &str) -> Result<(), error::IdenticonError> {
-        self.generate_image().save(output_filename).map_err(|_| error::IdenticonError::SaveImageError)
+        self.generate_image()
+            .save(output_filename)
+            .map_err(|_| error::IdenticonError::SaveImageError)
     }
 
     /// Export a PNG file buffer as a Vec<u8>
@@ -144,12 +146,14 @@ impl Identicon {
         let image_size = image.to_rgb().width();
         let mut file = Vec::new();
 
-        PNGEncoder::new(&mut file).encode(
-            image.to_rgb().into_raw().as_slice(),
-            image_size,
-            image_size,
-            image::ColorType::Rgb8,
-        ).map_err(|_| error::IdenticonError::SaveImageError)?;
+        PNGEncoder::new(&mut file)
+            .encode(
+                image.to_rgb().into_raw().as_slice(),
+                image_size,
+                image_size,
+                image::ColorType::Rgb8,
+            )
+            .map_err(|_| error::IdenticonError::SaveImageError)?;
         Ok(file)
     }
 
@@ -162,12 +166,14 @@ impl Identicon {
         let image_size = image.to_rgb().width();
         let mut file = Vec::new();
 
-        JPEGEncoder::new(&mut file).encode(
-            image.to_rgb().into_raw().as_slice(),
-            image_size,
-            image_size,
-            image::ColorType::Rgb8,
-        ).map_err(|_| error::IdenticonError::SaveImageError)?;
+        JPEGEncoder::new(&mut file)
+            .encode(
+                image.to_rgb().into_raw().as_slice(),
+                image_size,
+                image_size,
+                image::ColorType::Rgb8,
+            )
+            .map_err(|_| error::IdenticonError::SaveImageError)?;
         Ok(file)
     }
 }

@@ -1,5 +1,5 @@
-use identicon_rs::Identicon;
 use identicon_rs::error::IdenticonError;
+use identicon_rs::Identicon;
 
 fn main() -> Result<(), IdenticonError> {
     let fluffy_samurai = String::from("fluffy-samurai");
