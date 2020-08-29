@@ -19,7 +19,7 @@ async fn generate_jpeg(req: HttpRequest) -> impl Responder {
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    let address = "127.0.0.1:8088";
+    let address = "[::1]:8088";
     println!(
         "Navigate to http://{}/{{input_string}} to see the image",
         address
