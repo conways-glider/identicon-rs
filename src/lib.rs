@@ -19,7 +19,8 @@ pub struct Identicon {
     background_color: (u8, u8, u8),
 }
 
-/// Generates a new identicon
+/// Generates a new identicon.
+///
 /// This is a wrapper around [`identicon_rs::Identicon::new`]
 ///
 /// [`identicon_rs::Identicon::new`]: struct.Identicon.html#method.new
@@ -58,15 +59,18 @@ impl Identicon {
         }
     }
 
-    /// Sets the identicon border size
+    /// Sets the identicon border size.
+    ///
     /// Default is 5
     pub fn border(mut self, border: u32) -> Self {
         self.border = border;
         self
     }
 
-    /// Sets the number of viewable blocks of the identicon
-    /// This must be <= the scale
+    /// Sets the number of viewable blocks of the identicon.
+    ///
+    /// This must be <= the scale.
+    ///
     /// Default is 5x5
     pub fn size(mut self, size: u32) -> Result<Self, IdenticonError> {
         if size <= self.scale {
@@ -77,9 +81,12 @@ impl Identicon {
         }
     }
 
-    /// Sets the scale of the image
+    /// Sets the scale of the image.
+    ///
     /// The scale plus 2 times the border is the final pixel size of the image.
-    /// This must be >= the size
+    ///
+    /// This must be >= the size.
+    ///
     /// Default is 500
     pub fn scale(mut self, scale: u32) -> Result<Self, IdenticonError> {
         if scale >= self.size {
@@ -90,8 +97,10 @@ impl Identicon {
         }
     }
 
-    /// Sets the background, non-active color of the identicon
+    /// Sets the background, non-active color of the identicon.
+    ///
     /// This is a tuble of (red, green, blue) values.
+    ///
     /// Default is (240, 240, 240)
     pub fn background_color(mut self, background_color: (u8, u8, u8)) -> Self {
         self.background_color = background_color;
