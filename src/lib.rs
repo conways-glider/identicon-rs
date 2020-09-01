@@ -1,6 +1,6 @@
+use crate::error::IdenticonError;
 use image::{jpeg::JPEGEncoder, png::PNGEncoder, DynamicImage, ImageBuffer};
 use sha2::{Digest, Sha512};
-use crate::error::IdenticonError;
 
 mod color;
 pub mod error;

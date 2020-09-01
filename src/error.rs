@@ -15,8 +15,14 @@ impl fmt::Display for IdenticonError {
             // Could use the `write!` macro here, but `f.write_str` is slightly faster
             IdenticonError::SaveImageError => f.write_str("could not save image"),
             IdenticonError::EncodeImageError => f.write_str("could not encode image"),
-            IdenticonError::ScaleTooSmallError(size) => f.write_str(&format!("identicon scale too small, must be greater or equal to {}", size)),
-            IdenticonError::SizeTooLargeError(size) => f.write_str(&format!("identicon size too large, must be lesser or equal to {}", size)),
+            IdenticonError::ScaleTooSmallError(size) => f.write_str(&format!(
+                "identicon scale too small, must be greater or equal to {}",
+                size
+            )),
+            IdenticonError::SizeTooLargeError(size) => f.write_str(&format!(
+                "identicon size too large, must be lesser or equal to {}",
+                size
+            )),
         }
     }
 }
