@@ -1,8 +1,9 @@
 use palette::{Hsl, LinSrgb};
 
 use crate::map_values::map_values;
+use image::Rgb;
 
-pub fn generate_color(hash: &[u8]) -> LinSrgb<u8> {
+pub fn generate_color(hash: &[u8]) -> Rgb<u8> {
     // compute hash for hue space in larger bitspace
     let hue_hash_1 = (hash[0] as u16 & 0x0f) << 8;
     let hue_hash_2 = hash[1] as u16;
@@ -15,5 +16,10 @@ pub fn generate_color(hash: &[u8]) -> LinSrgb<u8> {
 
     // convert color to rgb value
     let color_hsl = Hsl::new(hue, saturation, lightness);
-    LinSrgb::from(color_hsl).into_format()
+    let color_lin_srgb = LinSrgb::from(color_hsl).into_format();
+    image::Rgb([
+        color_lin_srgb.red,
+        color_lin_srgb.green,
+        color_lin_srgb.blue,
+    ])
 }

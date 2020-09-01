@@ -1,23 +1,15 @@
 use image::{jpeg::JPEGEncoder, png::PNGEncoder, DynamicImage, ImageBuffer};
 use sha2::{Digest, Sha512};
 
-use palette::LinSrgb;
-
 mod color;
+pub mod error;
 mod grid;
 mod map_values;
-
-/// Represents available image types
-pub enum ImageType {
-    /// PNG file type
-    PNG,
-    /// JPEG or JPG file type
-    JPEG,
-}
 
 /// Generic Identicon struct
 ///
 /// This is the base struct to be used.
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct Identicon {
     hash: Vec<u8>,
     border: u32,
@@ -26,74 +18,68 @@ pub struct Identicon {
     background_color: (u8, u8, u8),
 }
 
+/// Generates a new identicon
+/// This is a wrapper around [`identicon_rs::Identicon::new`]
+///
+/// [`identicon_rs::Identicon::new`]: struct.Identicon.html#method.new
+pub fn new<T>(input_value: T) -> Identicon
+where
+    T: AsRef<str>,
+{
+    Identicon::new(input_value)
+}
+
 impl Identicon {
-    /// Generates a new identicon with all given parameters
-    pub fn new(
-        input_value: &str,
-        border: u32,
-        size: u32,
-        scale: u32,
-        background_color: (u8, u8, u8),
-    ) -> Identicon {
-        let hash = Identicon::get_hash_value(input_value);
-
-        Identicon {
-            hash,
-            border,
-            size,
-            scale,
-            background_color,
-        }
-    }
-
-    /// Generates a new identicon with base library defaults
+    /// Generates a new identicon
     ///
     /// The defaults are:
     /// - border: 50
     /// - size: 5
     /// - scale: 500
     /// - background_color: (240, 240, 240)
-    pub fn new_default(input_value: &str) -> Identicon {
-        let hash = Identicon::get_hash_value(input_value);
-        let background_color = 240;
+    pub fn new<T>(input_value: T) -> Self
+    where
+        T: AsRef<str>,
+    {
+        let hash = Identicon::hash_value(input_value.as_ref());
+        let default_background_color = 240;
 
         Identicon {
             hash,
             border: 50,
             size: 5,
             scale: 500,
-            background_color: (background_color, background_color, background_color),
+            background_color: (
+                default_background_color,
+                default_background_color,
+                default_background_color,
+            ),
         }
     }
 
-    /// Generates a new identicon with the defaults with no border
-    ///
-    /// The defaults are:
-    /// - border: 0
-    /// - size: 5
-    /// - scale: 500
-    /// - background_color: (240, 240, 240)
-    pub fn new_no_border(input_value: &str) -> Identicon {
-        let hash = Identicon::get_hash_value(input_value);
-        let background_color = 240;
-
-        Identicon {
-            hash,
-            border: 0,
-            size: 5,
-            scale: 500,
-            background_color: (background_color, background_color, background_color),
-        }
+    pub fn border(mut self, border: u32) -> Self {
+        self.border = border;
+        self
     }
 
-    fn get_hash_value(input_value: &str) -> Vec<u8> {
+    pub fn size(mut self, size: u32) -> Self {
+        self.size = size;
+        self
+    }
+
+    pub fn scale(mut self, scale: u32) -> Self {
+        self.scale = scale;
+        self
+    }
+
+    pub fn background_color(mut self, background_color: (u8, u8, u8)) -> Self {
+        self.background_color = background_color;
+        self
+    }
+
+    fn hash_value(input_value: &str) -> Vec<u8> {
         let input_trimmed = input_value.trim();
         Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec()
-    }
-
-    fn get_background_color(&self) -> LinSrgb<u8> {
-        let background_color = self.background_color;
-        LinSrgb::new(background_color.0, background_color.1, background_color.2)
     }
 
     /// Generates the DynamicImage representing the Identicon
@@ -112,13 +98,11 @@ impl Identicon {
         };
 
         // create pixel objects
-        let color = color::generate_color(&self.hash);
-        let background_color = self.get_background_color();
-        let pixel_active = image::Rgb([color.red, color.green, color.blue]);
+        let pixel_active = color::generate_color(&self.hash);
         let pixel_background = image::Rgb([
-            background_color.red,
-            background_color.green,
-            background_color.blue,
+            self.background_color.0,
+            self.background_color.1,
+            self.background_color.2,
         ]);
 
         // iterate over the coordinates and pixels of the image
@@ -147,38 +131,50 @@ impl Identicon {
     /// Saves the generated image to the given filename
     ///
     /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work.
-    pub fn save_image(&self, output_filename: &str) {
-        self.generate_image().save(output_filename).unwrap();
+    pub fn save_image(&self, output_filename: &str) -> Result<(), error::IdenticonError> {
+        self.generate_image()
+            .save(output_filename)
+            .map_err(|_| error::IdenticonError::SaveImageError)
     }
 
-    /// Export the file buffer as a Vec<u8>
+    /// Export a PNG file buffer as a Vec<u8>
     ///
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
-    pub fn export_file_data(&self, image_type: ImageType) -> Vec<u8> {
+    pub fn export_png_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
         let image = self.generate_image();
         let image_size = image.to_rgb().width();
-        let mut file = Vec::new();
+        let mut buffer = Vec::new();
 
-        match image_type {
-            ImageType::PNG => PNGEncoder::new(&mut file)
-                .encode(
-                    image.to_rgb().into_raw().as_slice(),
-                    image_size,
-                    image_size,
-                    image::RGB(8),
-                )
-                .unwrap(),
-            ImageType::JPEG => JPEGEncoder::new(&mut file)
-                .encode(
-                    image.to_rgb().into_raw().as_slice(),
-                    image_size,
-                    image_size,
-                    image::RGB(8),
-                )
-                .unwrap(),
-        }
-        file
+        PNGEncoder::new(&mut buffer)
+            .encode(
+                image.to_rgb().into_raw().as_slice(),
+                image_size,
+                image_size,
+                image::ColorType::Rgb8,
+            )
+            .map_err(|_| error::IdenticonError::EncodeImageError)?;
+        Ok(buffer)
+    }
+
+    /// Export a JPEG file buffer as a Vec<u8>
+    ///
+    /// This is for creating a file for a buffer or network response without creating a file on the
+    /// filesystem.
+    pub fn export_jpeg_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
+        let image = self.generate_image();
+        let image_size = image.to_rgb().width();
+        let mut buffer = Vec::new();
+
+        JPEGEncoder::new(&mut buffer)
+            .encode(
+                image.to_rgb().into_raw().as_slice(),
+                image_size,
+                image_size,
+                image::ColorType::Rgb8,
+            )
+            .map_err(|_| error::IdenticonError::EncodeImageError)?;
+        Ok(buffer)
     }
 }
 
@@ -188,8 +184,8 @@ mod tests {
 
     #[test]
     fn trim_of_input_works() {
-        let image_normal = Identicon::new_default("test").generate_image();
-        let image_padded = Identicon::new_default("  test  ").generate_image();
+        let image_normal = Identicon::new("test").generate_image();
+        let image_padded = Identicon::new("  test  ").generate_image();
         assert_eq!(
             image_normal.to_rgb().into_raw(),
             image_padded.to_rgb().into_raw()
@@ -198,8 +194,8 @@ mod tests {
 
     #[test]
     fn trim_of_input_failure_works() {
-        let image_normal = Identicon::new_default("test").generate_image();
-        let image_padded = Identicon::new_default("  test1  ").generate_image();
+        let image_normal = Identicon::new("test").generate_image();
+        let image_padded = Identicon::new("  test1  ").generate_image();
         assert_ne!(
             image_normal.to_rgb().into_raw(),
             image_padded.to_rgb().into_raw()

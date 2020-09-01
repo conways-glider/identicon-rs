@@ -1,6 +1,6 @@
 [package]
 name = "identicon-rs"
-version = "1.4.1"
+version = "2.0.0"
 authors = ["Nia Watts <niawatts95@gmail.com>"]
 edition = "2018"
 readme = "README.md"
@@ -8,7 +8,6 @@ description = """
 identicon-rs is a library built around custom generation of identicon images.
 """
 documentation = "https://docs.rs/identicon-rs"
-homepage = "https://github.com/fluffy-samurai/identicon-rs"
 repository = "https://github.com/fluffy-samurai/identicon-rs"
 license = "MIT OR Apache-2.0"
 keywords = ["image", "identicon", "avatar"]
@@ -26,9 +25,11 @@ include = [
 
 
 [dependencies]
-image = "0.22.5"
-sha2 = "0.8.2"
-palette = "0.4.1"
+image = "0.23.8"
+sha2 = "0.9.1"
+palette = "0.5.0"
 
 [dev-dependencies]
-actix-web = "1.0.0"
+actix-rt = "1.0.0"
+actix-web = "2.0.0"
+version-sync = "0.9.1"
