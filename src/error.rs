@@ -10,8 +10,9 @@ pub enum IdenticonError {
 impl fmt::Display for IdenticonError {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
-            IdenticonError::SaveImageError => write!(f, "could not save image"),
-            IdenticonError::EncodeImageError => write!(f, "could not encode image"),
+            // Could use the `write!` macro here, but `f.write_str` is slightly faster
+            IdenticonError::SaveImageError => f.write_str("could not save image"),
+            IdenticonError::EncodeImageError => f.write_str("could not encode image"),
         }
     }
 }
