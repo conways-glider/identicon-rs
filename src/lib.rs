@@ -1,5 +1,6 @@
 use image::{jpeg::JPEGEncoder, png::PNGEncoder, DynamicImage, ImageBuffer};
 use sha2::{Digest, Sha512};
+use crate::error::IdenticonError;
 
 mod color;
 pub mod error;
@@ -57,21 +58,41 @@ impl Identicon {
         }
     }
 
+    /// Sets the identicon border size
+    /// Default is 5
     pub fn border(mut self, border: u32) -> Self {
         self.border = border;
         self
     }
 
-    pub fn size(mut self, size: u32) -> Self {
-        self.size = size;
-        self
+    /// Sets the number of viewable blocks of the identicon
+    /// This must be <= the scale
+    /// Default is 5x5
+    pub fn size(mut self, size: u32) -> Result<Self, IdenticonError> {
+        if size <= self.scale {
+            self.size = size;
+            Ok(self)
+        } else {
+            Err(IdenticonError::SizeTooLargeError(self.scale))
+        }
     }
 
-    pub fn scale(mut self, scale: u32) -> Self {
-        self.scale = scale;
-        self
+    /// Sets the scale of the image
+    /// The scale plus 2 times the border is the final pixel size of the image.
+    /// This must be >= the size
+    /// Default is 500
+    pub fn scale(mut self, scale: u32) -> Result<Self, IdenticonError> {
+        if scale >= self.size {
+            self.scale = scale;
+            Ok(self)
+        } else {
+            Err(IdenticonError::ScaleTooSmallError(self.size))
+        }
     }
 
+    /// Sets the background, non-active color of the identicon
+    /// This is a tuble of (red, green, blue) values.
+    /// Default is (240, 240, 240)
     pub fn background_color(mut self, background_color: (u8, u8, u8)) -> Self {
         self.background_color = background_color;
         self
