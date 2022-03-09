@@ -15,10 +15,6 @@ pub fn generate_color(hash: &[u8]) -> Rgb<u8> {
 
     // convert color to rgb value
     let color_hsl = Hsl::new(hue, saturation, lightness);
-    let color_rgb = Srgb::from_color(color_hsl);
-    image::Rgb([
-        color_rgb.red as u8,
-        color_rgb.green as u8,
-        color_rgb.blue as u8,
-    ])
+    let color_rgb: Srgb<u8> = Srgb::from_color(color_hsl).into_format();
+    image::Rgb([color_rgb.red, color_rgb.green, color_rgb.blue])
 }

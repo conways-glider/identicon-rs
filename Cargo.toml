@@ -30,6 +30,5 @@ sha2 = "0.10"
 palette = "0.6"
 
 [dev-dependencies]
-actix-rt = "1.0.0"
-actix-web = "2.0.0"
-version-sync = "0.9.1"
+actix-web = "4"
+version-sync = "0.9"
