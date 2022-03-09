@@ -1,7 +1,8 @@
 use crate::error::IdenticonError;
 use image::codecs::jpeg::JpegEncoder;
 use image::codecs::png::PngEncoder;
-use image::{DynamicImage, ImageBuffer, ImageEncoder};
+use image::imageops::FilterType;
+use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
 use sha2::{Digest, Sha512};
 
 mod color;
@@ -115,19 +116,12 @@ impl Identicon {
     }
 
     /// Generates the DynamicImage representing the Identicon
-    pub fn generate_image(&self) -> DynamicImage {
-        let size = self.scale + self.border * 2;
-
+    pub fn generate_image(&self) -> Result<DynamicImage, IdenticonError> {
         // create a new ImgBuf with width: imgx and height: imgy
-        let mut imgbuf = ImageBuffer::new(size, size);
+        let mut image_buffer = ImageBuffer::new(self.size, self.size);
 
         // create a new grid
         let grid = grid::generate_full_grid(self.size, &self.hash);
-
-        // create a clojure to check whether the given location is within the border space
-        let check_within_border = |location: u32| -> bool {
-            location < self.border || location >= self.border + self.scale
-        };
 
         // create pixel objects
         let pixel_active = color::generate_color(&self.hash);
@@ -138,33 +132,38 @@ impl Identicon {
         ]);
 
         // iterate over the coordinates and pixels of the image
-        for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-            if check_within_border(x) || check_within_border(y) {
-                *pixel = pixel_background;
-            } else {
-                // get location within the generated grid
-                let location_scale = self.scale / self.size;
-                let x_location = (x - self.border) / location_scale;
-                let y_location = (y - self.border) / location_scale;
-                let grid_location = (x_location + y_location * self.size) % self.size.pow(2);
+        for (x, y, pixel) in image_buffer.enumerate_pixels_mut() {
+            // get location within the generated grid
+            let grid_location = (x + y * self.size) % self.size.pow(2);
 
-                // set the pixel color based on the value within the grid at the given position
-                if grid[grid_location as usize] {
-                    *pixel = pixel_active;
-                } else {
-                    *pixel = pixel_background;
-                }
+            // set the pixel color based on the value within the grid at the given position
+            if grid[grid_location as usize] {
+                *pixel = pixel_active;
+            } else {
+                *pixel = pixel_background;
             }
         }
 
-        DynamicImage::ImageRgb8(imgbuf)
+        let scaled_image_buffer = DynamicImage::ImageRgb8(image_buffer)
+            .resize(self.scale, self.scale, FilterType::Nearest)
+            .to_rgb8();
+
+        let final_size = self.scale + 2 * self.border;
+        let mut bordered_image_buffer =
+            ImageBuffer::from_fn(final_size, final_size, |_, _| pixel_background);
+
+        match bordered_image_buffer.copy_from(&scaled_image_buffer, self.border, self.border) {
+            Ok(_) => Ok(DynamicImage::ImageRgb8(bordered_image_buffer)),
+            Err(_) => Err(error::IdenticonError::GenerateImageError),
+        }
     }
 
     /// Saves the generated image to the given filename
     ///
     /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work.
     pub fn save_image(&self, output_filename: &str) -> Result<(), error::IdenticonError> {
-        self.generate_image()
+        let image = self.generate_image()?;
+        image
             .save(output_filename)
             .map_err(|_| error::IdenticonError::SaveImageError)
     }
@@ -174,7 +173,7 @@ impl Identicon {
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
     pub fn export_png_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
-        let image = self.generate_image();
+        let image = self.generate_image()?;
         let image_size = image.to_rgb8().width();
         let mut buffer = Vec::new();
 
@@ -194,7 +193,7 @@ impl Identicon {
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
     pub fn export_jpeg_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
-        let image = self.generate_image();
+        let image = self.generate_image()?;
         let image_size = image.to_rgb8().width();
         let mut buffer = Vec::new();
 
@@ -216,8 +215,8 @@ mod tests {
 
     #[test]
     fn trim_of_input_works() {
-        let image_normal = Identicon::new("test").generate_image();
-        let image_padded = Identicon::new("  test  ").generate_image();
+        let image_normal = Identicon::new("test").generate_image().unwrap();
+        let image_padded = Identicon::new("  test  ").generate_image().unwrap();
         assert_eq!(
             image_normal.to_rgb8().into_raw(),
             image_padded.to_rgb8().into_raw()
@@ -226,8 +225,8 @@ mod tests {
 
     #[test]
     fn trim_of_input_failure_works() {
-        let image_normal = Identicon::new("test").generate_image();
-        let image_padded = Identicon::new("  test1  ").generate_image();
+        let image_normal = Identicon::new("test").generate_image().unwrap();
+        let image_padded = Identicon::new("  test1  ").generate_image().unwrap();
         assert_ne!(
             image_normal.to_rgb8().into_raw(),
             image_padded.to_rgb8().into_raw()
