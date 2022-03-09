@@ -1,14 +1,14 @@
 [package]
 name = "identicon-rs"
-version = "2.0.2"
-authors = ["Nia Watts <niawatts95@gmail.com>"]
-edition = "2018"
+version = "2.1.0"
+authors = ["Nia Maxwell <nia@nia.dev>"]
+edition = "2021"
 readme = "README.md"
 description = """
 identicon-rs is a library built around custom generation of identicon images.
 """
 documentation = "https://docs.rs/identicon-rs"
-repository = "https://github.com/fluffy-samurai/identicon-rs"
+repository = "https://github.com/conways-glider/identicon-rs"
 license = "MIT OR Apache-2.0"
 keywords = ["image", "identicon", "avatar"]
 categories = ["graphics", "multimedia::images", "value-formatting", "visualization"]

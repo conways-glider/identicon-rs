@@ -2,12 +2,12 @@ use identicon_rs::error::IdenticonError;
 use identicon_rs::Identicon;
 
 fn main() -> Result<(), IdenticonError> {
-    let fluffy_samurai = String::from("fluffy-samurai");
+    let conways_glider = String::from("conways-glider");
     let test_string = "identicon_rs";
 
     // stored example
-    let identicon_fluffy = Identicon::new(&fluffy_samurai);
-    identicon_fluffy.save_image("output_1.png")?;
+    let identicon_conways_glider = Identicon::new(&conways_glider);
+    identicon_conways_glider.save_image("output_1.png")?;
 
     // chained example with no border
     Identicon::new(test_string)
