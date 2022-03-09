@@ -1,4 +1,4 @@
-name: Continuous integration
+name: Continuous Integration
 on:
   push:
     branches:
@@ -67,4 +67,3 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
-
