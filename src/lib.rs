@@ -1,7 +1,7 @@
 use crate::error::IdenticonError;
-use image::{DynamicImage, ImageBuffer, ImageEncoder};
-use image::codecs::png::PngEncoder;
 use image::codecs::jpeg::JpegEncoder;
+use image::codecs::png::PngEncoder;
+use image::{DynamicImage, ImageBuffer, ImageEncoder};
 use sha2::{Digest, Sha512};
 
 mod color;
@@ -183,7 +183,7 @@ impl Identicon {
                 image.to_rgb8().into_raw().as_slice(),
                 image_size,
                 image_size,
-                image::ColorType::Rgb8
+                image::ColorType::Rgb8,
             )
             .map_err(|_| error::IdenticonError::EncodeImageError)?;
         Ok(buffer)
@@ -203,7 +203,7 @@ impl Identicon {
                 image.to_rgb8().into_raw().as_slice(),
                 image_size,
                 image_size,
-                image::ColorType::Rgb8
+                image::ColorType::Rgb8,
             )
             .map_err(|_| error::IdenticonError::EncodeImageError)?;
         Ok(buffer)
