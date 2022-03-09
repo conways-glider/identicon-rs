@@ -119,7 +119,7 @@ impl Identicon {
     pub fn generate_image(&self) -> DynamicImage {
 
         // create a new ImgBuf with width: imgx and height: imgy
-        let mut imgbuf = ImageBuffer::new(self.size, self.size);
+        let mut image_buffer = ImageBuffer::new(self.size, self.size);
 
         // create a new grid
         let grid = grid::generate_full_grid(self.size, &self.hash);
@@ -133,7 +133,7 @@ impl Identicon {
         ]);
 
         // iterate over the coordinates and pixels of the image
-        for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
+        for (x, y, pixel) in image_buffer.enumerate_pixels_mut() {
             // get location within the generated grid
             let grid_location = (x + y * self.size) % self.size.pow(2);
 
@@ -145,7 +145,16 @@ impl Identicon {
             }
         }
 
-        DynamicImage::ImageRgb8(imgbuf).resize(self.scale, self.scale, FilterType::Nearest)
+        let scaled_image = DynamicImage::ImageRgb8(image_buffer).resize(self.scale, self.scale, FilterType::Nearest);
+
+        let final_size = self.scale + 2 * self.border;
+        let mut image_buffer = ImageBuffer::from_fn(final_size, final_size, |_, _| {
+            pixel_background
+        });
+
+        let copy_result = image_buffer.copy_from(&scaled_image, self.border, self.border);
+
+        DynamicImage::ImageRgb8(image_buffer)
     }
 
     /// Saves the generated image to the given filename
