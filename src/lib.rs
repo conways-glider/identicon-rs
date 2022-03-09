@@ -20,6 +20,7 @@ pub struct Identicon {
     size: u32,
     scale: u32,
     background_color: (u8, u8, u8),
+    mirrored: bool,
 }
 
 /// Generates a new identicon.
@@ -42,6 +43,7 @@ impl Identicon {
     /// - size: 5
     /// - scale: 500
     /// - background_color: (240, 240, 240)
+    /// - mirrored: true
     pub fn new<T>(input_value: T) -> Self
     where
         T: AsRef<str>,
@@ -59,6 +61,7 @@ impl Identicon {
                 default_background_color,
                 default_background_color,
             ),
+            mirrored: true,
         }
     }
 
@@ -110,6 +113,16 @@ impl Identicon {
         self
     }
 
+    /// Sets whether the identicon is mirrored along the y axis.
+    ///
+    /// This is a boolean.
+    ///
+    /// Default is true
+    pub fn mirrored(mut self, mirrored: bool) -> Self {
+        self.mirrored = mirrored;
+        self
+    }
+
     fn hash_value(input_value: &str) -> Vec<u8> {
         let input_trimmed = input_value.trim();
         Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec()
@@ -133,8 +146,15 @@ impl Identicon {
 
         // iterate over the coordinates and pixels of the image
         for (x, y, pixel) in image_buffer.enumerate_pixels_mut() {
+            // handles mirroring the x location
+            let x_location = if self.mirrored && x > self.size / 2 {
+                self.size - x - 1
+            } else {
+                x
+            };
+
             // get location within the generated grid
-            let grid_location = (x + y * self.size) % self.size.pow(2);
+            let grid_location = (x_location + y * self.size) % self.size.pow(2);
 
             // set the pixel color based on the value within the grid at the given position
             if grid[grid_location as usize] {
