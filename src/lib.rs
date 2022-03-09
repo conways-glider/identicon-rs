@@ -2,7 +2,7 @@ use crate::error::IdenticonError;
 use image::codecs::jpeg::JpegEncoder;
 use image::codecs::png::PngEncoder;
 use image::imageops::FilterType;
-use image::{DynamicImage, ImageBuffer, ImageEncoder};
+use image::{DynamicImage, ImageBuffer, ImageEncoder, GenericImage};
 use sha2::{Digest, Sha512};
 
 mod color;
