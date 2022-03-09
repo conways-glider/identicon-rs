@@ -1,5 +1,7 @@
 use crate::error::IdenticonError;
-use image::{jpeg::JPEGEncoder, png::PNGEncoder, DynamicImage, ImageBuffer};
+use image::{DynamicImage, ImageBuffer, ImageEncoder};
+use image::codecs::png::PngEncoder;
+use image::codecs::jpeg::JpegEncoder;
 use sha2::{Digest, Sha512};
 
 mod color;
@@ -173,15 +175,15 @@ impl Identicon {
     /// filesystem.
     pub fn export_png_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
         let image = self.generate_image();
-        let image_size = image.to_rgb().width();
+        let image_size = image.to_rgb8().width();
         let mut buffer = Vec::new();
 
-        PNGEncoder::new(&mut buffer)
-            .encode(
-                image.to_rgb().into_raw().as_slice(),
+        PngEncoder::new(&mut buffer)
+            .write_image(
+                image.to_rgb8().into_raw().as_slice(),
                 image_size,
                 image_size,
-                image::ColorType::Rgb8,
+                image::ColorType::Rgb8
             )
             .map_err(|_| error::IdenticonError::EncodeImageError)?;
         Ok(buffer)
@@ -193,15 +195,15 @@ impl Identicon {
     /// filesystem.
     pub fn export_jpeg_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
         let image = self.generate_image();
-        let image_size = image.to_rgb().width();
+        let image_size = image.to_rgb8().width();
         let mut buffer = Vec::new();
 
-        JPEGEncoder::new(&mut buffer)
-            .encode(
-                image.to_rgb().into_raw().as_slice(),
+        JpegEncoder::new(&mut buffer)
+            .write_image(
+                image.to_rgb8().into_raw().as_slice(),
                 image_size,
                 image_size,
-                image::ColorType::Rgb8,
+                image::ColorType::Rgb8
             )
             .map_err(|_| error::IdenticonError::EncodeImageError)?;
         Ok(buffer)
@@ -217,8 +219,8 @@ mod tests {
         let image_normal = Identicon::new("test").generate_image();
         let image_padded = Identicon::new("  test  ").generate_image();
         assert_eq!(
-            image_normal.to_rgb().into_raw(),
-            image_padded.to_rgb().into_raw()
+            image_normal.to_rgb8().into_raw(),
+            image_padded.to_rgb8().into_raw()
         );
     }
 
@@ -227,8 +229,8 @@ mod tests {
         let image_normal = Identicon::new("test").generate_image();
         let image_padded = Identicon::new("  test1  ").generate_image();
         assert_ne!(
-            image_normal.to_rgb().into_raw(),
-            image_padded.to_rgb().into_raw()
+            image_normal.to_rgb8().into_raw(),
+            image_padded.to_rgb8().into_raw()
         );
     }
 }
