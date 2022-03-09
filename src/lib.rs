@@ -144,12 +144,9 @@ impl Identicon {
             }
         }
 
-        let scaled_image = DynamicImage::ImageRgb8(image_buffer).resize(
-            self.scale,
-            self.scale,
-            FilterType::Nearest,
-        );
-        let scaled_image_buffer = scaled_image.to_rgb8();
+        let scaled_image_buffer = DynamicImage::ImageRgb8(image_buffer)
+            .resize(self.scale, self.scale, FilterType::Nearest)
+            .to_rgb8();
 
         let final_size = self.scale + 2 * self.border;
         let mut bordered_image_buffer =
