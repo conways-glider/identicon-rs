@@ -1,6 +1,7 @@
 use crate::error::IdenticonError;
 use image::codecs::jpeg::JpegEncoder;
 use image::codecs::png::PngEncoder;
+use image::imageops::FilterType;
 use image::{DynamicImage, ImageBuffer, ImageEncoder};
 use sha2::{Digest, Sha512};
 
@@ -116,18 +117,12 @@ impl Identicon {
 
     /// Generates the DynamicImage representing the Identicon
     pub fn generate_image(&self) -> DynamicImage {
-        let size = self.scale + self.border * 2;
 
         // create a new ImgBuf with width: imgx and height: imgy
-        let mut imgbuf = ImageBuffer::new(size, size);
+        let mut imgbuf = ImageBuffer::new(self.size, self.size);
 
         // create a new grid
         let grid = grid::generate_full_grid(self.size, &self.hash);
-
-        // create a clojure to check whether the given location is within the border space
-        let check_within_border = |location: u32| -> bool {
-            location < self.border || location >= self.border + self.scale
-        };
 
         // create pixel objects
         let pixel_active = color::generate_color(&self.hash);
@@ -139,25 +134,18 @@ impl Identicon {
 
         // iterate over the coordinates and pixels of the image
         for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-            if check_within_border(x) || check_within_border(y) {
-                *pixel = pixel_background;
-            } else {
-                // get location within the generated grid
-                let location_scale = self.scale / self.size;
-                let x_location = (x - self.border) / location_scale;
-                let y_location = (y - self.border) / location_scale;
-                let grid_location = (x_location + y_location * self.size) % self.size.pow(2);
+            // get location within the generated grid
+            let grid_location = (x + y * self.size) % self.size.pow(2);
 
-                // set the pixel color based on the value within the grid at the given position
-                if grid[grid_location as usize] {
-                    *pixel = pixel_active;
-                } else {
-                    *pixel = pixel_background;
-                }
+            // set the pixel color based on the value within the grid at the given position
+            if grid[grid_location as usize] {
+                *pixel = pixel_active;
+            } else {
+                *pixel = pixel_background;
             }
         }
 
-        DynamicImage::ImageRgb8(imgbuf)
+        DynamicImage::ImageRgb8(imgbuf).resize(self.scale, self.scale, FilterType::Nearest)
     }
 
     /// Saves the generated image to the given filename
