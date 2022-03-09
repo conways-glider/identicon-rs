@@ -3,7 +3,7 @@ use image::codecs::jpeg::JpegEncoder;
 use image::codecs::png::PngEncoder;
 use image::imageops::FilterType;
 use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
-use sha2::{Digest, Sha512};
+use sha3::{Digest, Sha3_256};
 
 mod color;
 pub mod error;
@@ -125,7 +125,9 @@ impl Identicon {
 
     fn hash_value(input_value: &str) -> Vec<u8> {
         let input_trimmed = input_value.trim();
-        Sha512::digest(input_trimmed.as_bytes()).as_slice().to_vec()
+        Sha3_256::digest(input_trimmed.as_bytes())
+            .as_slice()
+            .to_vec()
     }
 
     /// Generates the DynamicImage representing the Identicon
