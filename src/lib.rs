@@ -2,7 +2,7 @@ use crate::error::IdenticonError;
 use image::codecs::jpeg::JpegEncoder;
 use image::codecs::png::PngEncoder;
 use image::imageops::FilterType;
-use image::{DynamicImage, ImageBuffer, ImageEncoder, GenericImage};
+use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
 use sha2::{Digest, Sha512};
 
 mod color;
@@ -116,8 +116,7 @@ impl Identicon {
     }
 
     /// Generates the DynamicImage representing the Identicon
-    pub fn generate_image(&self) -> DynamicImage {
-
+    pub fn generate_image(&self) -> Result<DynamicImage, IdenticonError> {
         // create a new ImgBuf with width: imgx and height: imgy
         let mut image_buffer = ImageBuffer::new(self.size, self.size);
 
@@ -145,23 +144,29 @@ impl Identicon {
             }
         }
 
-        let scaled_image = DynamicImage::ImageRgb8(image_buffer).resize(self.scale, self.scale, FilterType::Nearest);
+        let scaled_image = DynamicImage::ImageRgb8(image_buffer).resize(
+            self.scale,
+            self.scale,
+            FilterType::Nearest,
+        );
+        let scaled_image_buffer = scaled_image.to_rgb8();
 
         let final_size = self.scale + 2 * self.border;
-        let mut image_buffer = ImageBuffer::from_fn(final_size, final_size, |_, _| {
-            pixel_background
-        });
+        let mut bordered_image_buffer =
+            ImageBuffer::from_fn(final_size, final_size, |_, _| pixel_background);
 
-        let copy_result = image_buffer.copy_from(&scaled_image, self.border, self.border);
-
-        DynamicImage::ImageRgb8(image_buffer)
+        match bordered_image_buffer.copy_from(&scaled_image_buffer, self.border, self.border) {
+            Ok(_) => Ok(DynamicImage::ImageRgb8(bordered_image_buffer)),
+            Err(_) => Err(error::IdenticonError::GenerateImageError),
+        }
     }
 
     /// Saves the generated image to the given filename
     ///
     /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work.
     pub fn save_image(&self, output_filename: &str) -> Result<(), error::IdenticonError> {
-        self.generate_image()
+        let image = self.generate_image()?;
+        image
             .save(output_filename)
             .map_err(|_| error::IdenticonError::SaveImageError)
     }
@@ -171,7 +176,7 @@ impl Identicon {
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
     pub fn export_png_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
-        let image = self.generate_image();
+        let image = self.generate_image()?;
         let image_size = image.to_rgb8().width();
         let mut buffer = Vec::new();
 
@@ -191,7 +196,7 @@ impl Identicon {
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
     pub fn export_jpeg_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
-        let image = self.generate_image();
+        let image = self.generate_image()?;
         let image_size = image.to_rgb8().width();
         let mut buffer = Vec::new();
 
@@ -213,8 +218,8 @@ mod tests {
 
     #[test]
     fn trim_of_input_works() {
-        let image_normal = Identicon::new("test").generate_image();
-        let image_padded = Identicon::new("  test  ").generate_image();
+        let image_normal = Identicon::new("test").generate_image().unwrap();
+        let image_padded = Identicon::new("  test  ").generate_image().unwrap();
         assert_eq!(
             image_normal.to_rgb8().into_raw(),
             image_padded.to_rgb8().into_raw()
@@ -223,8 +228,8 @@ mod tests {
 
     #[test]
     fn trim_of_input_failure_works() {
-        let image_normal = Identicon::new("test").generate_image();
-        let image_padded = Identicon::new("  test1  ").generate_image();
+        let image_normal = Identicon::new("test").generate_image().unwrap();
+        let image_padded = Identicon::new("  test1  ").generate_image().unwrap();
         assert_ne!(
             image_normal.to_rgb8().into_raw(),
             image_padded.to_rgb8().into_raw()

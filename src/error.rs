@@ -3,6 +3,7 @@ use std::fmt::Formatter;
 
 #[derive(Debug)]
 pub enum IdenticonError {
+    GenerateImageError,
     SaveImageError,
     EncodeImageError,
     ScaleTooSmallError(u32),
@@ -13,6 +14,7 @@ impl fmt::Display for IdenticonError {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
             // Could use the `write!` macro here, but `f.write_str` is slightly faster
+            IdenticonError::GenerateImageError => f.write_str("could not generate image"),
             IdenticonError::SaveImageError => f.write_str("could not save image"),
             IdenticonError::EncodeImageError => f.write_str("could not encode image"),
             IdenticonError::ScaleTooSmallError(size) => f.write_str(&format!(
