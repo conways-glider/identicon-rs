@@ -11,7 +11,7 @@ fn main() -> Result<(), IdenticonError> {
 
     // chained example with no border
     Identicon::new(test_string)
-        .border(0)
+        .set_border(0)
         .save_image("output_2.png")?;
     Ok(())
 }
