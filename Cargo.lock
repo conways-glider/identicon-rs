@@ -680,7 +680,7 @@ checksum = "c4a1e36c821dbe04574f602848a19f742f4fb3c98d40449f11bcad18d6b17421"
 
 [[package]]
 name = "identicon-rs"
-version = "2.3.0"
+version = "3.0.0"
 dependencies = [
  "actix-web",
  "image",

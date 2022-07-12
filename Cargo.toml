@@ -1,6 +1,6 @@
 [package]
 name = "identicon-rs"
-version = "2.3.0"
+version = "3.0.0"
 authors = ["Nia Maxwell <nia@nia.dev>"]
 edition = "2021"
 readme = "README.md"
