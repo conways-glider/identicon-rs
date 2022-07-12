@@ -65,12 +65,22 @@ impl Identicon {
         }
     }
 
+    /// Gets the identicon border size.
+    pub fn border(&self) -> u32 {
+        self.border
+    }
+
     /// Sets the identicon border size.
     ///
     /// Default is 5
     pub fn set_border(&mut self, border: u32) -> &mut Self {
         self.border = border;
         self
+    }
+
+    /// Gets the identicon size
+    pub fn size(&self) -> u32 {
+        self.size
     }
 
     /// Sets the number of viewable blocks of the identicon.
@@ -85,6 +95,11 @@ impl Identicon {
         } else {
             Err(IdenticonError::SizeTooLargeError(self.scale))
         }
+    }
+
+    /// Gets the identicon scale
+    pub fn scale(&self) -> u32 {
+        self.scale
     }
 
     /// Sets the scale of the image.
@@ -103,6 +118,11 @@ impl Identicon {
         }
     }
 
+    /// Gets the identicon background color
+    pub fn background_color(&self) -> (u8, u8, u8) {
+        self.background_color
+    }
+
     /// Sets the background, non-active color of the identicon.
     ///
     /// This is a tuble of (red, green, blue) values.
@@ -111,6 +131,11 @@ impl Identicon {
     pub fn set_background_color(&mut self, background_color: (u8, u8, u8)) -> &mut Self {
         self.background_color = background_color;
         self
+    }
+
+    /// Gets if the identicon is mirrored
+    pub fn mirrored(&mut self) -> bool {
+        self.mirrored
     }
 
     /// Sets whether the identicon is mirrored along the y axis.
@@ -257,13 +282,25 @@ mod tests {
 
     #[test]
     fn chained_setters_work() {
-        let identicon_chained = Identicon::new("test").set_border(10).set_background_color((0,0,0)).clone();
+        let identicon_chained = Identicon::new("test")
+            .set_border(10)
+            .set_background_color((0, 0, 0))
+            .clone();
+
         let mut identicon_mutated = Identicon::new("test");
         identicon_mutated.set_border(10);
-        identicon_mutated.set_background_color((0,0,0));
-        assert_eq!(
-            identicon_chained,
-            identicon_mutated
-        );
+        identicon_mutated.set_background_color((0, 0, 0));
+
+        assert_eq!(identicon_chained, identicon_mutated);
+    }
+
+    #[test]
+    fn getters_work() {
+        let identicon = Identicon::new("test")
+            .set_border(10)
+            .set_background_color((0, 0, 0))
+            .clone();
+
+        assert_eq!(identicon.border(), identicon.border);
     }
 }
