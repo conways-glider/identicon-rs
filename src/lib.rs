@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::error::IdenticonError;
 use image::codecs::jpeg::JpegEncoder;
 use image::codecs::png::PngEncoder;
@@ -36,7 +38,7 @@ where
 }
 
 impl Identicon {
-    /// Generates a new identicon
+    /// Generates a new identicon from an input value
     ///
     /// The defaults are:
     /// - border: 50
@@ -48,21 +50,18 @@ impl Identicon {
     where
         T: AsRef<str>,
     {
-        let hash = Identicon::hash_value(input_value.as_ref());
-        let default_background_color = 240;
+        let mut identicon = Self::default();
+        identicon.set_input(input_value);
+        identicon
+    }
 
-        Identicon {
-            hash,
-            border: 50,
-            size: 5,
-            scale: 500,
-            background_color: (
-                default_background_color,
-                default_background_color,
-                default_background_color,
-            ),
-            mirrored: true,
-        }
+    /// Sets the identicon input value, regenerating the hash
+    pub fn set_input<T>(&mut self, input_value: T) -> &mut Self
+    where
+        T: AsRef<str>,
+    {
+        self.hash = Self::hash_value(input_value.as_ref());
+        self
     }
 
     /// Gets the identicon border size.
@@ -107,8 +106,6 @@ impl Identicon {
     /// The scale plus 2 times the border is the final pixel size of the image.
     ///
     /// This must be >= the size.
-    ///
-    /// Default is 500
     pub fn set_scale(&mut self, scale: u32) -> Result<&mut Self, IdenticonError> {
         if scale >= self.size {
             self.scale = scale;
@@ -126,23 +123,19 @@ impl Identicon {
     /// Sets the background, non-active color of the identicon.
     ///
     /// This is a tuble of (red, green, blue) values.
-    ///
-    /// Default is (240, 240, 240)
     pub fn set_background_color(&mut self, background_color: (u8, u8, u8)) -> &mut Self {
         self.background_color = background_color;
         self
     }
 
     /// Gets if the identicon is mirrored
-    pub fn mirrored(&mut self) -> bool {
+    pub fn mirrored(&self) -> bool {
         self.mirrored
     }
 
     /// Sets whether the identicon is mirrored along the y axis.
     ///
     /// This is a boolean.
-    ///
-    /// Default is true
     pub fn set_mirrored(&mut self, mirrored: bool) -> &mut Self {
         self.mirrored = mirrored;
         self
@@ -157,9 +150,6 @@ impl Identicon {
 
     /// Generates the DynamicImage representing the Identicon
     pub fn generate_image(&self) -> Result<DynamicImage, IdenticonError> {
-        // create a new ImgBuf with width: imgx and height: imgy
-        let mut image_buffer = ImageBuffer::new(self.size, self.size);
-
         // create a new grid
         let grid = grid::generate_full_grid(self.size, &self.hash);
 
@@ -171,9 +161,8 @@ impl Identicon {
             self.background_color.2,
         ]);
 
-        // iterate over the coordinates and pixels of the image
-        for (x, y, pixel) in image_buffer.enumerate_pixels_mut() {
-            // handles mirroring the x location
+        // create image buffer from grid
+        let image_buffer = ImageBuffer::from_fn(self.size, self.size, |x, y| {
             let x_location = if self.mirrored && x > self.size / 2 {
                 self.size - x - 1
             } else {
@@ -185,17 +174,17 @@ impl Identicon {
 
             // set the pixel color based on the value within the grid at the given position
             if grid[grid_location as usize] {
-                *pixel = pixel_active;
+                pixel_active
             } else {
-                *pixel = pixel_background;
+                pixel_background
             }
-        }
+        });
 
         let scaled_image_buffer = DynamicImage::ImageRgb8(image_buffer)
             .resize(self.scale, self.scale, FilterType::Nearest)
             .to_rgb8();
 
-        let final_size = self.scale + 2 * self.border;
+        let final_size = self.scale + (2 * self.border);
         let mut bordered_image_buffer =
             ImageBuffer::from_fn(final_size, final_size, |_, _| pixel_background);
 
@@ -256,6 +245,32 @@ impl Identicon {
     }
 }
 
+impl Default for Identicon {
+    fn default() -> Self {
+        let default_background_color = 240;
+        Self {
+            hash: Self::hash_value(""),
+            border: 50,
+            size: 5,
+            scale: 500,
+            background_color: (
+                default_background_color,
+                default_background_color,
+                default_background_color,
+            ),
+            mirrored: true,
+        }
+    }
+}
+
+impl FromStr for Identicon {
+    type Err = IdenticonError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Self::new(s))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::Identicon;
@@ -302,5 +317,19 @@ mod tests {
             .clone();
 
         assert_eq!(identicon.border(), identicon.border);
+    }
+
+    #[test]
+    fn from_str_works() {
+        let identicon = Identicon::new("test");
+        let identicon_from_str = "test".parse::<Identicon>().unwrap();
+        assert_eq!(identicon, identicon_from_str);
+    }
+
+    #[test]
+    fn from_str_failure_works() {
+        let identicon = Identicon::new("test");
+        let identicon_from_str = "test1".parse::<Identicon>().unwrap();
+        assert_ne!(identicon, identicon_from_str);
     }
 }
