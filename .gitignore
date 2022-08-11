@@ -2,6 +2,9 @@
 **/*.rs.bk
 .idea
 
+# Prevent lock files
+Cargo.lock
+
 # Prevents the test image
 test.png
 output*.png
