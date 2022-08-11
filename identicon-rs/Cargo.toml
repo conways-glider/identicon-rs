@@ -1,0 +1,34 @@
+[package]
+name = "identicon-rs"
+version = "3.1.0"
+authors = ["Nia Maxwell <nia@nia.dev>"]
+edition = "2021"
+readme = "README.md"
+description = """
+identicon-rs is a library built around custom generation of identicon images.
+"""
+documentation = "https://docs.rs/identicon-rs"
+repository = "https://github.com/conways-glider/identicon-rs"
+license = "MIT OR Apache-2.0"
+keywords = ["image", "identicon", "avatar"]
+categories = ["graphics", "multimedia::images", "value-formatting", "visualization"]
+
+include = [
+    "Cargo.toml",
+    "README.md",
+    "src/**",
+    "examples/**",
+    "tests/**",
+    "LICENSE-APACHE",
+    "LICENSE-MIT",
+]
+
+
+[dependencies]
+image = "0.24"
+sha3 = "0.10"
+palette = "0.6"
+
+[dev-dependencies]
+actix-web = "4"
+version-sync = "0.9"

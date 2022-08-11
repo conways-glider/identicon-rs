@@ -1,9 +1,7 @@
 /target
 **/*.rs.bk
 .idea
-
-# Prevent lock files
-Cargo.lock
+.vscode
 
 # Prevents the test image
 test.png
