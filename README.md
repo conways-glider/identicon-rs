@@ -7,10 +7,10 @@ This is an Identicon implementation in rust.
 
 ## Example:
 ```rust
+use identicon_rs::error::IdenticonError;
 use identicon_rs::Identicon;
-use std::io;
 
-fn main() -> Result<(), io::Error> {
+fn main() -> Result<(), IdenticonError> {
     let conways_glider = String::from("conways-glider");
     let test_string = "identicon_rs";
 
@@ -20,7 +20,7 @@ fn main() -> Result<(), io::Error> {
 
     // chained example with no border
     Identicon::new(test_string)
-        .border(0)
+        .set_border(0)
         .save_image("output_2.png")?;
     Ok(())
 }
