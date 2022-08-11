@@ -18,6 +18,7 @@ include = [
     "README.md",
     "src/**",
     "examples/**",
+    "tests/**",
     "LICENSE-APACHE",
     "LICENSE-MIT",
 ]
