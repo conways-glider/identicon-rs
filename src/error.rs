@@ -1,30 +1,55 @@
-use std::fmt;
-use std::fmt::Formatter;
+use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Error, Debug)]
 pub enum IdenticonError {
+    #[error("could not generate image")]
     GenerateImageError,
+    #[error("could not save image")]
     SaveImageError,
+    #[error("could not encode image")]
     EncodeImageError,
+    #[error("identicon scale too small, must be greater or equal to {0}")]
     ScaleTooSmallError(u32),
+    #[error("identicon scale too large, must be less or equal to {0}")]
     SizeTooLargeError(u32),
 }
 
-impl fmt::Display for IdenticonError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        match self {
-            // Could use the `write!` macro here, but `f.write_str` is slightly faster
-            IdenticonError::GenerateImageError => f.write_str("could not generate image"),
-            IdenticonError::SaveImageError => f.write_str("could not save image"),
-            IdenticonError::EncodeImageError => f.write_str("could not encode image"),
-            IdenticonError::ScaleTooSmallError(size) => f.write_str(&format!(
-                "identicon scale too small, must be greater or equal to {}",
-                size
-            )),
-            IdenticonError::SizeTooLargeError(size) => f.write_str(&format!(
-                "identicon size too large, must be lesser or equal to {}",
-                size
-            )),
-        }
+#[cfg(test)]
+mod tests {
+    use crate::error::IdenticonError;
+
+    #[test]
+    fn generate_image_error_works() {
+        let error = IdenticonError::GenerateImageError;
+        let expected_text = "could not generate image";
+        assert_eq!(expected_text, error.to_string());
+    }
+
+    #[test]
+    fn save_image_error_works() {
+        let error = IdenticonError::SaveImageError;
+        let expected_text = "could not save image";
+        assert_eq!(expected_text, error.to_string());
+    }
+
+    #[test]
+    fn encode_image_error_works() {
+        let error = IdenticonError::EncodeImageError;
+        let expected_text = "could not encode image";
+        assert_eq!(expected_text, error.to_string());
+    }
+
+    #[test]
+    fn scale_too_small_error_works() {
+        let error = IdenticonError::ScaleTooSmallError(3);
+        let expected_text = "identicon scale too small, must be greater or equal to 3";
+        assert_eq!(expected_text, error.to_string());
+    }
+
+    #[test]
+    fn size_too_large_error_works() {
+        let error = IdenticonError::SizeTooLargeError(3);
+        let expected_text = "identicon scale too large, must be less or equal to 3";
+        assert_eq!(expected_text, error.to_string());
     }
 }
