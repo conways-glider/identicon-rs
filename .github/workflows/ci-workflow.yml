@@ -67,3 +67,12 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --all-features
+
+  readme_generated:
+    name: Readme Generated
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: ./scripts/test-readme.sh
