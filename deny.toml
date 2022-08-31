@@ -1,0 +1,40 @@
+[advisories]
+vulnerability = "deny"
+unmaintained = "warn"
+yanked = "warn"
+notice = "warn"
+
+[licenses]
+unlicensed = "deny"
+allow = []
+deny = []
+copyleft = "warn"
+allow-osi-fsf-free = "either"
+default = "deny"
+confidence-threshold = 1.0
+
+[[licenses.clarify]]
+name = "lebe"
+version = "0.5.1"
+expression = "BSD-3-Clause"
+license-files = [
+    { path = "LICENSE.md", hash = 0x0a7391bb }
+]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "allow"
+highlight = "all"
+
+[sources]
+# Lint level for what to happen when a crate from a crate registry that is not
+# in the allow list is encountered
+unknown-registry = "warn"
+# Lint level for what to happen when a crate from a git repository that is not
+# in the allow list is encountered
+unknown-git = "warn"
+# List of URLs for allowed crate registries. Defaults to the crates.io index
+# if not specified. If it is specified but empty, no registries are allowed.
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+# List of URLs for allowed Git repositories
+allow-git = []
