@@ -76,3 +76,10 @@ jobs:
         with:
           fetch-depth: 0
       - run: ./scripts/test-readme.sh
+
+  cargo-deny:
+    name: Cargo Deny
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: EmbarkStudios/cargo-deny-action@v1
