@@ -2,12 +2,18 @@ use handlebars::Handlebars;
 use serde_json::json;
 use std::fs;
 
-// Example custom build script.
 fn main() {
-    // Tell Cargo that if the given file changes, to rerun this build script.
+    // Add generic files to rerun list.
     println!("cargo:rerun-if-changed=Cargo.toml");
-    println!("cargo:rerun-if-changed=templates/README.hbs");
     println!("cargo:rerun-if-changed=build.rs");
+
+    // Generate the README
+    generate_readme();
+}
+
+fn generate_readme() {
+    // Tell Cargo that if the given file changes, to rerun this build script.
+    println!("cargo:rerun-if-changed=templates/README.hbs");
 
     // Get the version
     let identicon_rs_version = env!("CARGO_PKG_VERSION");
