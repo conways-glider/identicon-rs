@@ -30,10 +30,6 @@ You can run this example with `cargo run --example main`.
 
 The repository contains an example webservice that you can run with `cargo run --example webserver`.
 
-## TODO
-- add more information to README.md
-- add more examples
-
 ## License
 
 Licensed under either of
