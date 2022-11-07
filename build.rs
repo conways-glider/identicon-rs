@@ -1,6 +1,6 @@
 use handlebars::Handlebars;
 use serde_json::json;
-use std::{process::Command, fs};
+use std::{fs, process::Command};
 
 // Example custom build script.
 fn main() {
