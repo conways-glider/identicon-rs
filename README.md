@@ -1,7 +1,7 @@
 # Identicon-rs
 
 [![Continuous Integration](https://github.com/conways-glider/identicon-rs/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/conways-glider/identicon-rs/actions/workflows/ci-workflow.yml)
-[![dependency status](https://deps.rs/crate/identicon-rs/3.1.3/status.svg)](https://deps.rs/crate/identicon-rs/3.1.3)
+[![dependency status](https://deps.rs/crate/identicon-rs/3.1.4/status.svg)](https://deps.rs/crate/identicon-rs/3.1.4)
 
 This is an Identicon implementation in rust.
 
