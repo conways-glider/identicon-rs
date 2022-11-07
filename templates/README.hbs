@@ -1,29 +1,13 @@
 # Identicon-rs
 
 [![Continuous Integration](https://github.com/conways-glider/identicon-rs/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/conways-glider/identicon-rs/actions/workflows/ci-workflow.yml)
-[![dependency status](https://deps.rs/crate/identicon-rs/{VERSION}/status.svg)](https://deps.rs/crate/identicon-rs/{VERSION})
+[![dependency status](https://deps.rs/crate/identicon-rs/{{version}}/status.svg)](https://deps.rs/crate/identicon-rs/{{version}})
 
 This is an Identicon implementation in rust.
 
 ## Example:
 ```rust
-use identicon_rs::error::IdenticonError;
-use identicon_rs::Identicon;
-
-fn main() -> Result<(), IdenticonError> {
-    let conways_glider = String::from("conways-glider");
-    let test_string = "identicon_rs";
-
-    // stored example
-    let identicon_conways_glider = Identicon::new(&conways_glider);
-    identicon_conways_glider.save_image("output_1.png")?;
-
-    // chained example with no border
-    Identicon::new(test_string)
-        .set_border(0)
-        .save_image("output_2.png")?;
-    Ok(())
-}
+{{main_example}}
 ```
 
 You can run this example with `cargo run --example main`.
