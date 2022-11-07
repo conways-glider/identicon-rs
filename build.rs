@@ -5,7 +5,8 @@ use std::fs;
 // Example custom build script.
 fn main() {
     // Tell Cargo that if the given file changes, to rerun this build script.
-    println!("cargo:rerun-if-changed=scripts/README_TEMPLATE.md");
+    println!("cargo:rerun-if-changed=Cargo.toml");
+    println!("cargo:rerun-if-changed=templates/README.hbs");
     println!("cargo:rerun-if-changed=build.rs");
 
     // Get the version
