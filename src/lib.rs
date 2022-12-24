@@ -83,6 +83,8 @@ impl Identicon {
     }
 
     /// Gets the identicon size.
+    ///
+    /// The size represents the number of viewable blocks of the identicon.
     pub fn size(&self) -> u32 {
         self.size
     }
@@ -91,7 +93,7 @@ impl Identicon {
     ///
     /// This must be <= the scale.
     ///
-    /// Default is 5x5.
+    /// Default is 5, representing an identicon with a grid of 5x5.
     pub fn set_size(&mut self, size: u32) -> Result<&mut Self, IdenticonError> {
         if size <= self.scale {
             self.size = size;
@@ -102,13 +104,17 @@ impl Identicon {
     }
 
     /// Gets the identicon scale.
+    ///
+    /// The scale represents the height and width of the identicon portion of any generated image.
+    ///
+    /// The full image size is: `scale + ( 2 * border )`
     pub fn scale(&self) -> u32 {
         self.scale
     }
 
     /// Sets the scale of the image.
     ///
-    /// The scale plus 2 times the border is the final pixel size of the image.
+    /// The full image size is: `scale + ( 2 * border )`
     ///
     /// This must be >= the size.
     pub fn set_scale(&mut self, scale: u32) -> Result<&mut Self, IdenticonError> {

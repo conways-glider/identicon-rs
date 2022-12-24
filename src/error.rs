@@ -3,15 +3,24 @@ use thiserror::Error;
 /// Identicon errors.
 #[derive(Error, Debug)]
 pub enum IdenticonError {
+    /// Failed to generate the image.
     #[error("could not generate image")]
     GenerateImageError,
+
+    /// Failed to save the image to a file.
     #[error("could not save image")]
     SaveImageError,
+
+    /// Failed to encode the image.
     #[error("could not encode image")]
     EncodeImageError,
-    #[error("identicon scale too small, must be greater or equal to {0}")]
+
+    /// Indicates an issue with using a scale smaller than the size.
+    #[error("identicon scale too small, must be greater or equal to identicon size: {0}")]
     ScaleTooSmallError(u32),
-    #[error("identicon scale too large, must be less or equal to {0}")]
+
+    /// Indicates an issues with using a size larger than the scale.
+    #[error("identicon size too large, must be less or equal to identicon scale: {0}")]
     SizeTooLargeError(u32),
 }
 
