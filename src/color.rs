@@ -66,6 +66,7 @@ impl From<&[u8]> for Hsl {
         // compute hsl values
         let hue = map_values(hue_hash as f32, 0.0, 4095.0, 0.0, 360.0);
 
+        // handle 0 degree hue is equivalent to 360 degree hue
         let hue = hue % 360.0;
 
         // saturation should be between 0.5 and 0.75 for pastel colors
