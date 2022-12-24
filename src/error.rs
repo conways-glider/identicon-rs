@@ -16,12 +16,24 @@ pub enum IdenticonError {
     EncodeImageError,
 
     /// Indicates an issue with using a scale smaller than the size.
-    #[error("identicon scale too small, must be greater or equal to identicon size: {0}")]
-    ScaleTooSmallError(u32),
+    #[error(
+        "identicon scale too small: {scale}, must be greater or equal to identicon size: {size}"
+    )]
+    ScaleTooSmallError {
+        /// Attempted scale value.
+        scale: u32,
+        /// Currently set size value.
+        size: u32,
+    },
 
     /// Indicates an issues with using a size larger than the scale.
-    #[error("identicon size too large, must be less or equal to identicon scale: {0}")]
-    SizeTooLargeError(u32),
+    #[error("identicon size too large: {size}, must be less or equal to identicon scale: {scale}")]
+    SizeTooLargeError {
+        /// Attempted size value.
+        size: u32,
+        /// Currently set scale value.
+        scale: u32,
+    },
 }
 
 #[cfg(test)]
@@ -51,14 +63,14 @@ mod tests {
 
     #[test]
     fn scale_too_small_error_works() {
-        let error = IdenticonError::ScaleTooSmallError(3);
+        let error = IdenticonError::ScaleTooSmallError { scale: 3, size: 5 };
         let expected_text = "identicon scale too small, must be greater or equal to 3";
         assert_eq!(expected_text, error.to_string());
     }
 
     #[test]
     fn size_too_large_error_works() {
-        let error = IdenticonError::SizeTooLargeError(3);
+        let error = IdenticonError::SizeTooLargeError { size: 5, scale: 3 };
         let expected_text = "identicon scale too large, must be less or equal to 3";
         assert_eq!(expected_text, error.to_string());
     }
