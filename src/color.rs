@@ -6,7 +6,7 @@ use crate::map_values::map_values;
 pub fn generate_color(hash: &[u8]) -> (u8, u8, u8) {
     let hsl = Hsl::from(hash);
 
-    // convert hsl to rgb
+    // Convert HSL to RGB
     let chroma = (1.0 - ((2.0 * hsl.lightness) - 1.0).abs()) * hsl.saturation;
     let hue_prime = hsl.hue / 60.0;
     let x = chroma * (1.0 - ((hue_prime % 2.0) - 1.0).abs());
@@ -39,7 +39,7 @@ pub fn generate_color(hash: &[u8]) -> (u8, u8, u8) {
     //     _ => (0.0, 0.0, 0.0),
     // }
 
-    // lightness modifier
+    // Lightness modifier
     let m = hsl.lightness - chroma * 0.5;
 
     let red = (r_prime + m) * 255.0;
@@ -58,21 +58,21 @@ pub struct Hsl {
 
 impl From<&[u8]> for Hsl {
     fn from(hash: &[u8]) -> Self {
-        // compute hash for hue space in larger bitspace
+        // Compute hash for hue space in larger bitspace
         let hue_hash_1 = (hash[0] as u16 & 0x0f) << 8;
         let hue_hash_2 = hash[1] as u16;
         let hue_hash = (hue_hash_1 | hue_hash_2) as u32;
 
-        // compute hsl values
+        // Compute HSL values
         let hue = map_values(hue_hash as f32, 0.0, 4095.0, 0.0, 360.0);
 
-        // handle 0 degree hue is equivalent to 360 degree hue
+        // Handle 0 degree hue is equivalent to 360 degree hue
         let hue = hue % 360.0;
 
-        // saturation should be between 0.5 and 0.75 for pastel colors
+        // Saturation should be between 0.5 and 0.75 for pastel colors
         let saturation = map_values(hash[2] as f32, 0.0, 255.0, 50.0, 75.0) / 100.0;
 
-        // lightness should be between 0.6 and 0.70 for pastel colors
+        // Lightness should be between 0.6 and 0.70 for pastel colors
         let lightness = map_values(hash[3] as f32, 0.0, 255.0, 60.0, 70.0) / 100.0;
         Hsl {
             hue,
