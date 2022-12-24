@@ -100,7 +100,7 @@ impl Identicon {
             Ok(self)
         } else {
             Err(IdenticonError::SizeTooLargeError {
-                size: size,
+                size,
                 scale: self.scale,
             })
         }
@@ -126,7 +126,7 @@ impl Identicon {
             Ok(self)
         } else {
             Err(IdenticonError::ScaleTooSmallError {
-                scale: scale,
+                scale,
                 size: self.size,
             })
         }
