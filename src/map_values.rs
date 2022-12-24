@@ -6,7 +6,16 @@ pub fn map_values(
     target_max: f32,
 ) -> f32 {
     let slope = (target_max - target_min) as f32 / (input_max - input_min) as f32;
-    (value - input_min) as f32 * slope + target_min as f32
+    let value = (value - input_min) as f32 * slope + target_min as f32;
+
+    // handle floating point bugs
+    // handle over max case
+    let max_checked_value = f32::min(value, target_max);
+
+    // handle under min case
+    let max_min_checked_value = f32::max(max_checked_value, target_min);
+
+    max_min_checked_value
 }
 
 #[cfg(test)]
