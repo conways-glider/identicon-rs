@@ -9,7 +9,7 @@ pub fn generate_color(hash: &[u8]) -> (u8, u8, u8) {
     // convert hsl to rgb
     let chroma = (1.0 - ((2.0 * hsl.lightness) - 1.0).abs()) * hsl.saturation;
     let hue_prime = hsl.hue / 60.0;
-    let x = chroma * (1.0 - (hue_prime % 2.0 - 1.0).abs());
+    let x = chroma * (1.0 - ((hue_prime % 2.0) - 1.0).abs());
 
     let (r_prime, g_prime, b_prime) = if (0.0..1.0).contains(&hue_prime) {
         (chroma, x, 0.0)
@@ -27,6 +27,17 @@ pub fn generate_color(hash: &[u8]) -> (u8, u8, u8) {
         // This should not occur as the hue is between 0 and 360, which casts down to between 0-6
         (0.0, 0.0, 0.0)
     };
+
+    // This is blocked by https://github.com/rust-lang/rust/issues/37854
+    // let (r_prime, g_prime, b_prime) = match hue_prime {
+    //     0.0..1.0 => (chroma, x, 0.0),
+    //     1.0..2.0 => (x, chroma, 0.0),
+    //     2.0..3.0 => (0.0, chroma, x),
+    //     3.0..4.0 => (0.0, x, chroma),
+    //     4.0..5.0 => (x, 0.0, chroma),
+    //     5.0..6.0 => (chroma, 0.0, x),
+    //     _ => (0.0, 0.0, 0.0),
+    // }
 
     // lightness modifier
     let m = hsl.lightness - chroma * 0.5;
