@@ -156,7 +156,12 @@ impl Identicon {
         let grid = grid::generate_full_grid(self.size, &self.hash);
 
         // create pixel objects
-        let pixel_active = color::generate_color(&self.hash);
+        let color_active = color::generate_color(&self.hash);
+        let pixel_active = image::Rgb([
+            color_active.0,
+            color_active.1,
+            color_active.2,
+        ]);
         let pixel_background = image::Rgb([
             self.background_color.0,
             self.background_color.1,
