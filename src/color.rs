@@ -11,17 +11,17 @@ pub fn generate_color(hash: &[u8]) -> (u8, u8, u8) {
     let hue_prime = hsl.hue / 60.0;
     let x = chroma * (1.0 - (hue_prime % 2.0 - 1.0).abs());
 
-    let (r_prime, g_prime, b_prime) = if hue_prime >= 0.0 && hue_prime < 1.0 {
+    let (r_prime, g_prime, b_prime) = if (0.0..1.0).contains(&hue_prime) {
         (chroma, x, 0.0)
-    } else if hue_prime >= 1.0 && hue_prime < 2.0 {
+    } else if (1.0..2.0).contains(&hue_prime) {
         (x, chroma, 0.0)
-    } else if hue_prime >= 2.0 && hue_prime < 3.0 {
+    } else if (2.0..3.0).contains(&hue_prime) {
         (0.0, chroma, x)
-    } else if hue_prime >= 3.0 && hue_prime < 4.0 {
+    } else if (3.0..4.0).contains(&hue_prime) {
         (0.0, x, chroma)
-    } else if hue_prime >= 4.0 && hue_prime < 5.0 {
+    } else if (4.0..5.0).contains(&hue_prime) {
         (x, 0.0, chroma)
-    } else if hue_prime >= 5.0 && hue_prime < 6.0 {
+    } else if (5.0..6.0).contains(&hue_prime) {
         (chroma, 0.0, x)
     } else {
         // This should not occur as the hue is between 0 and 360, which casts down to between 0-6
