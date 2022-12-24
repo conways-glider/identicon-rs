@@ -6,7 +6,7 @@ fn main() -> Result<(), IdenticonError> {
     let test_string = "identicon_rs";
 
     // stored example
-    let identicon_conways_glider = Identicon::new(&conways_glider);
+    let identicon_conways_glider = Identicon::new(conways_glider);
     identicon_conways_glider.save_image("output_1.png")?;
 
     // chained example with no border
