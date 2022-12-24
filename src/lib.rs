@@ -161,10 +161,10 @@ impl Identicon {
 
     /// Generates the DynamicImage representing the Identicon.
     pub fn generate_image(&self) -> Result<DynamicImage, IdenticonError> {
-        // create a new grid
+        // Create a new grid
         let grid = grid::generate_full_grid(self.size, &self.hash);
 
-        // create pixel objects
+        // Create pixel objects
         let color_active = color::generate_color(&self.hash);
         let pixel_active = image::Rgb([color_active.0, color_active.1, color_active.2]);
         let pixel_background = image::Rgb([
@@ -173,7 +173,7 @@ impl Identicon {
             self.background_color.2,
         ]);
 
-        // create image buffer from grid
+        // Create image buffer from grid
         let image_buffer = ImageBuffer::from_fn(self.size, self.size, |x, y| {
             let x_location = if self.mirrored && x > self.size / 2 {
                 self.size - x - 1
@@ -181,10 +181,10 @@ impl Identicon {
                 x
             };
 
-            // get location within the generated grid
+            // Get location within the generated grid
             let grid_location = (x_location + y * self.size) % self.size.pow(2);
 
-            // set the pixel color based on the value within the grid at the given position
+            // Set the pixel color based on the value within the grid at the given position
             if grid[grid_location as usize] {
                 pixel_active
             } else {

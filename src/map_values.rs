@@ -9,11 +9,11 @@ pub fn map_values(
     let slope = (target_max - target_min) / (input_max - input_min);
     let value = (value - input_min) * slope + target_min;
 
-    // handle floating point bugs
-    // handle over max case
+    // Handle floating point bugs
+    // Handle over max case
     let max_checked_value = f32::min(value, target_max);
 
-    // handle under min case
+    // Handle under min case
     f32::max(max_checked_value, target_min)
 }
 
