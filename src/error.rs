@@ -64,14 +64,14 @@ mod tests {
     #[test]
     fn scale_too_small_error_works() {
         let error = IdenticonError::ScaleTooSmallError { scale: 3, size: 5 };
-        let expected_text = "identicon scale too small, must be greater or equal to 3";
+        let expected_text = "identicon scale too small: 3, must be greater or equal to identicon size: 5";
         assert_eq!(expected_text, error.to_string());
     }
 
     #[test]
     fn size_too_large_error_works() {
         let error = IdenticonError::SizeTooLargeError { size: 5, scale: 3 };
-        let expected_text = "identicon scale too large, must be less or equal to 3";
+        let expected_text = "identicon size too large: 5, must be less or equal to identicon scale: 3";
         assert_eq!(expected_text, error.to_string());
     }
 }
