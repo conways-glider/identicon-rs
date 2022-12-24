@@ -1,5 +1,6 @@
 use thiserror::Error;
 
+/// Identicon errors.
 #[derive(Error, Debug)]
 pub enum IdenticonError {
     #[error("could not generate image")]

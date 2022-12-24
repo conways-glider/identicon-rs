@@ -1,4 +1,5 @@
 #![doc = include_str!("../README.md")]
+#![warn(missing_docs)]
 
 use std::str::FromStr;
 
@@ -10,11 +11,13 @@ use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
 use sha3::{Digest, Sha3_256};
 
 mod color;
+
+/// Identicon errors.
 pub mod error;
 mod grid;
 mod map_values;
 
-/// Generic Identicon struct
+/// Generic Identicon struct.
 ///
 /// This is the base struct to be used.
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
@@ -29,7 +32,7 @@ pub struct Identicon {
 
 /// Generates a new identicon.
 ///
-/// This is a wrapper around [`identicon_rs::Identicon::new`]
+/// This is a wrapper around [`identicon_rs::Identicon::new`].
 ///
 /// [`identicon_rs::Identicon::new`]: struct.Identicon.html#method.new
 pub fn new<T>(input_value: T) -> Identicon
@@ -40,7 +43,7 @@ where
 }
 
 impl Identicon {
-    /// Generates a new identicon from an input value
+    /// Generates a new identicon from an input value.
     ///
     /// The defaults are:
     /// - border: 50
@@ -57,7 +60,7 @@ impl Identicon {
         identicon
     }
 
-    /// Sets the identicon input value, regenerating the hash
+    /// Sets the identicon input value, regenerating the hash.
     pub fn set_input<T>(&mut self, input_value: T) -> &mut Self
     where
         T: AsRef<str>,
@@ -79,7 +82,7 @@ impl Identicon {
         self
     }
 
-    /// Gets the identicon size
+    /// Gets the identicon size.
     pub fn size(&self) -> u32 {
         self.size
     }
@@ -88,7 +91,7 @@ impl Identicon {
     ///
     /// This must be <= the scale.
     ///
-    /// Default is 5x5
+    /// Default is 5x5.
     pub fn set_size(&mut self, size: u32) -> Result<&mut Self, IdenticonError> {
         if size <= self.scale {
             self.size = size;
@@ -98,7 +101,7 @@ impl Identicon {
         }
     }
 
-    /// Gets the identicon scale
+    /// Gets the identicon scale.
     pub fn scale(&self) -> u32 {
         self.scale
     }
@@ -117,7 +120,7 @@ impl Identicon {
         }
     }
 
-    /// Gets the identicon background color
+    /// Gets the identicon background color.
     pub fn background_color(&self) -> (u8, u8, u8) {
         self.background_color
     }
@@ -130,7 +133,7 @@ impl Identicon {
         self
     }
 
-    /// Gets if the identicon is mirrored
+    /// Gets if the identicon is mirrored.
     pub fn mirrored(&self) -> bool {
         self.mirrored
     }
@@ -150,7 +153,7 @@ impl Identicon {
             .to_vec()
     }
 
-    /// Generates the DynamicImage representing the Identicon
+    /// Generates the DynamicImage representing the Identicon.
     pub fn generate_image(&self) -> Result<DynamicImage, IdenticonError> {
         // create a new grid
         let grid = grid::generate_full_grid(self.size, &self.hash);
@@ -197,7 +200,7 @@ impl Identicon {
         }
     }
 
-    /// Saves the generated image to the given filename
+    /// Saves the generated image to the given filename.
     ///
     /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work.
     pub fn save_image(&self, output_filename: &str) -> Result<(), error::IdenticonError> {
@@ -207,7 +210,7 @@ impl Identicon {
             .map_err(|_| error::IdenticonError::SaveImageError)
     }
 
-    /// Export a PNG file buffer as a Vec<u8>
+    /// Export a PNG file buffer as a Vec<u8>.
     ///
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
@@ -227,7 +230,7 @@ impl Identicon {
         Ok(buffer)
     }
 
-    /// Export a JPEG file buffer as a Vec<u8>
+    /// Export a JPEG file buffer as a Vec<u8>.
     ///
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.

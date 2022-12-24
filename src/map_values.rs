@@ -1,3 +1,4 @@
+/// Value mapping from one range to another.
 pub fn map_values(
     value: f32,
     input_min: f32,
