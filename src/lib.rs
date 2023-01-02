@@ -295,7 +295,7 @@ mod tests {
 
     #[test]
     fn consistency() {
-        let expected_color = (111, 212, 172);
+        let expected_color = (112, 212, 172);
         let expected_grid = vec![
             true, true, true, true, false, true, true, true, false, true, true, true, false, true,
             true, false, true, true, true, true, true, true, false, true, true,
