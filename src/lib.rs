@@ -171,7 +171,7 @@ impl Identicon {
         let grid = grid::generate_full_grid(self.size, &self.hash);
 
         // Create pixel objects
-        let color_active = color::generate_color(&self.hash);
+        let color_active = color::generate_rgb_color(&self.hash);
         let pixel_active = image::Rgb([color_active.0, color_active.1, color_active.2]);
         let pixel_background = image::Rgb([
             self.background_color.0,
@@ -303,7 +303,7 @@ mod tests {
 
         let image = Identicon::new("test");
         let grid = crate::grid::generate_full_grid(image.size, &image.hash);
-        let color = crate::color::generate_color(&image.hash);
+        let color = crate::color::generate_rgb_color(&image.hash);
 
         assert_eq!(expected_color, color);
 
