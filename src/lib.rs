@@ -294,6 +294,23 @@ mod tests {
     use crate::Identicon;
 
     #[test]
+    fn consistency() {
+        let expected_color = (111, 212, 172);
+        let expected_grid = vec![
+            true, true, true, true, false, true, true, true, false, true, true, true, false, true,
+            true, false, true, true, true, true, true, true, false, true, true,
+        ];
+
+        let image = Identicon::new("test");
+        let grid = crate::grid::generate_full_grid(image.size, &image.hash);
+        let color = crate::color::generate_color(&image.hash);
+
+        assert_eq!(expected_color, color);
+
+        assert_eq!(expected_grid, grid);
+    }
+
+    #[test]
     fn trim_of_input_works() {
         let image_normal = Identicon::new("test").generate_image().unwrap();
         let image_padded = Identicon::new("  test  ").generate_image().unwrap();
