@@ -38,6 +38,8 @@ jobs:
     - name: Run clippy
       run: cargo clippy
 
+  # Tool: https://github.com/EmbarkStudios/cargo-deny
+  # Action: https://github.com/EmbarkStudios/cargo-deny-action
   cargo-deny:
     runs-on: ubuntu-latest
     strategy:
@@ -49,7 +51,6 @@ jobs:
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     steps:
     - uses: actions/checkout@v3
-    - name: Install cargo-deny
-      run: cargo install --locked cargo-deny
-    - name: Run cargo-deny
-      run: cargo deny check ${{ matrix.checks }}
+    - uses: EmbarkStudios/cargo-deny-action@v1
+      with:
+        command: check ${{ matrix.checks }}
