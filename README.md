@@ -1,7 +1,7 @@
 # Identicon-rs
 
 [![Rust](https://github.com/conways-glider/identicon-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/conways-glider/identicon-rs/actions/workflows/rust.yml)
-[![dependency status](https://deps.rs/crate/identicon-rs/4.0.2/status.svg)](https://deps.rs/crate/identicon-rs/4.0.2)
+[![dependency status](https://deps.rs/crate/identicon-rs/4.0.3/status.svg)](https://deps.rs/crate/identicon-rs/4.0.3)
 
 This is an Identicon implementation in rust.
 
