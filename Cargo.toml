@@ -19,5 +19,6 @@ sha3 = "0.10"
 thiserror = "1.0"
 
 [dev-dependencies]
-actix-web = "4"
+axum = "0.7"
+tokio = { version = "1.0", features = ["full"] }
 version-sync = "0.9"

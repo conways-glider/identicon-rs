@@ -1,28 +1,59 @@
-use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
+use std::ffi::OsStr;
+
+use axum::{
+    extract::Path,
+    http::{header, StatusCode},
+    response::IntoResponse,
+    routing::get,
+    Router,
+};
 use identicon_rs::Identicon;
 
-#[get("/{name}.png")]
-async fn generate_png(path: web::Path<String>) -> impl Responder {
-    let identicon_string = path.into_inner();
-    let identicon = Identicon::new(identicon_string);
-    let file = identicon.export_png_data().unwrap();
+#[tokio::main]
+async fn main() {
+    let app = Router::new().route("/:input", get(root));
 
-    HttpResponse::Ok().content_type("image/png").body(file)
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
 
-#[get("/{name}.jpg")]
-async fn generate_jpeg(path: web::Path<String>) -> impl Responder {
-    let identicon_string = path.into_inner();
-    let identicon = Identicon::new(identicon_string);
-    let file = identicon.export_jpeg_data().unwrap();
-
-    HttpResponse::Ok().content_type("image/jpeg").body(file)
+// basic handler that responds with a static string
+async fn root(Path(input): Path<String>) -> impl IntoResponse {
+    let file_path = std::path::Path::new(&input);
+    match file_path.file_stem() {
+        None => StatusCode::BAD_REQUEST.into_response(),
+        Some(input) => match input.to_str() {
+            None => StatusCode::BAD_REQUEST.into_response(),
+            Some(name) => {
+                let identicon: Identicon = Identicon::new(name);
+                generate_image(file_path.extension(), &identicon).into_response()
+            }
+        },
+    }
 }
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(generate_png).service(generate_jpeg))
-        .bind(("127.0.0.1", 8080))?
-        .run()
-        .await
+fn generate_image(extention: Option<&OsStr>, identicon: &Identicon) -> impl IntoResponse {
+    match extention {
+        Some(os_str) => match os_str.to_str() {
+            Some("jpeg") | Some("jpg") => (
+                StatusCode::OK,
+                [(header::CONTENT_TYPE, "image/jpeg")],
+                identicon.export_jpeg_data().unwrap(),
+            )
+                .into_response(),
+            Some("png") => (
+                StatusCode::OK,
+                [(header::CONTENT_TYPE, "image/png")],
+                identicon.export_png_data().unwrap(),
+            )
+                .into_response(),
+            _ => StatusCode::BAD_REQUEST.into_response(),
+        },
+        None => (
+            StatusCode::OK,
+            [(header::CONTENT_TYPE, "image/png")],
+            identicon.export_png_data().unwrap(),
+        )
+            .into_response(),
+    }
 }
