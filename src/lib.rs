@@ -36,10 +36,7 @@ pub struct Identicon {
 /// This is a wrapper around [`identicon_rs::Identicon::new`].
 ///
 /// [`identicon_rs::Identicon::new`]: struct.Identicon.html#method.new
-pub fn new<T>(input_value: T) -> Identicon
-where
-    T: AsRef<str>,
-{
+pub fn new(input_value: &str) -> Identicon {
     Identicon::new(input_value)
 }
 
@@ -52,21 +49,15 @@ impl Identicon {
     /// - scale: 500
     /// - background_color: (240, 240, 240)
     /// - mirrored: true
-    pub fn new<T>(input_value: T) -> Self
-    where
-        T: AsRef<str>,
-    {
+    pub fn new(input_value: &str) -> Self {
         let mut identicon = Self::default();
         identicon.set_input(input_value);
         identicon
     }
 
     /// Sets the identicon input value, regenerating the hash.
-    pub fn set_input<T>(&mut self, input_value: T) -> &mut Self
-    where
-        T: AsRef<str>,
-    {
-        self.hash = Self::hash_value(input_value.as_ref());
+    pub fn set_input(&mut self, input_value: &str) -> &mut Self {
+        self.hash = Self::hash_value(input_value);
         self
     }
 
