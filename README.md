@@ -2,6 +2,8 @@
 
 [![Rust](https://github.com/conways-glider/identicon-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/conways-glider/identicon-rs/actions/workflows/rust.yml)
 [![dependency status](https://deps.rs/crate/identicon-rs/5.0.0/status.svg)](https://deps.rs/crate/identicon-rs/5.0.0)
+[![Crates.io](https://img.shields.io/crates/v/identicon-rs)](https://crates.io/crates/identicon-rs)
+[![Documentation](https://docs.rs/identicon-rs/badge.svg)](https://docs.rs/identicon-rs)
 
 This is an Identicon implementation in rust.
 
@@ -30,6 +32,13 @@ fn main() -> Result<(), IdenticonError> {
 You can run this example with `cargo run --example main`.
 
 The repository contains an example webservice that you can run with `cargo run --example webserver`.
+
+You will obtain images analogous to the following ones:
+
+<p float="center">
+  <img src="/examples/example1.png" width="100" />
+  <img src="/examples/example2.png" width="100" /> 
+</p>
 
 ## License
 
