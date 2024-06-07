@@ -228,7 +228,7 @@ impl Identicon {
                 image.to_rgb8().into_raw().as_slice(),
                 image_size,
                 image_size,
-                image::ColorType::Rgb8,
+                image::ExtendedColorType::Rgb8,
             )
             .map_err(|_| error::IdenticonError::EncodeImageError)?;
         Ok(buffer)
@@ -248,7 +248,7 @@ impl Identicon {
                 image.to_rgb8().into_raw().as_slice(),
                 image_size,
                 image_size,
-                image::ColorType::Rgb8,
+                image::ExtendedColorType::Rgb8,
             )
             .map_err(|_| error::IdenticonError::EncodeImageError)?;
         Ok(buffer)
