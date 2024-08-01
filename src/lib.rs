@@ -16,7 +16,7 @@ use image::codecs::png::PngEncoder;
 use image::imageops::FilterType;
 use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
 use sha3::{Digest, Sha3_256};
-use theme::{HSLRange, Theme};
+use theme::Theme;
 
 #[cfg(feature = "async")]
 use Arc as SharedPtr;
@@ -179,8 +179,8 @@ impl Identicon {
         let grid = grid::generate_full_grid(self.size, &self.hash);
 
         // Create pixel objects
-        let color_active = self.theme.main_color(&self.hash);
-        let color_background = self.theme.background_color(&self.hash);
+        let color_active = self.theme.main_color(&self.hash)?;
+        let color_background = self.theme.background_color(&self.hash)?;
         let pixel_active = image::Rgb([color_active.red, color_active.green, color_active.blue]);
         let pixel_background = image::Rgb([
             color_background.red,
@@ -312,7 +312,9 @@ mod tests {
 
         let image = Identicon::new("test");
         let grid = crate::grid::generate_full_grid(image.size, &image.hash);
-        let color = crate::theme::default_theme().main_color(&image.hash);
+        let color = crate::theme::default_theme()
+            .main_color(&image.hash)
+            .expect("could not get color");
 
         assert_eq!(expected_color, color);
 
