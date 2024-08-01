@@ -97,13 +97,7 @@ impl Theme {
                 let hue_hash = ((hash[0 % hash.len()] as u16) << 8) | hash[1 % hash.len()] as u16;
 
                 // Compute HSL values
-                let hash_hue = map_values(
-                    hue_hash as f32,
-                    u16::MIN as f32,
-                    u16::MAX as f32,
-                    hue_min,
-                    hue_max,
-                );
+                let hash_hue = map_values(hue_hash as f32, u16::MIN as f32, u16::MAX as f32, hue_min, hue_max);
 
                 // Handle 0 degree hue is equivalent to 360 degree hue
                 let hue = hash_hue % 360.0;
