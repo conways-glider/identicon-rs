@@ -1,6 +1,6 @@
 #![doc = include_str!("../README.md")]
 #![forbid(unsafe_code)]
-#![warn(missing_docs)]
+#![forbid(missing_docs)]
 
 use std::str::FromStr;
 
@@ -11,17 +11,20 @@ use image::imageops::FilterType;
 use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
 use sha3::{Digest, Sha3_256};
 
-mod color;
-
 /// Identicon errors.
 pub mod error;
+
+/// Theme objects and color settings.
+pub mod theme;
+
+mod color;
 mod grid;
 mod map_values;
 
 /// Generic Identicon struct.
 ///
 /// This is the base struct to be used.
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Clone, PartialEq, PartialOrd, Debug)]
 pub struct Identicon {
     hash: Vec<u8>,
     border: u32,
@@ -29,6 +32,7 @@ pub struct Identicon {
     scale: u32,
     background_color: (u8, u8, u8),
     mirrored: bool,
+    theme: theme::Theme,
 }
 
 /// Generates a new identicon.
@@ -269,6 +273,7 @@ impl Default for Identicon {
                 default_background_color,
             ),
             mirrored: true,
+            theme: theme::DEFAULT_THEME
         }
     }
 }
