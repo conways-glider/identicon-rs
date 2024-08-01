@@ -74,6 +74,7 @@ pub enum Theme {
 }
 
 impl Theme {
+    /// Calculate the main image color.
     pub fn get_main_color(self, hash: &[u8]) -> RGB {
         match self {
             Theme::Selection {
@@ -154,6 +155,7 @@ impl Theme {
         }
     }
 
+    /// Calculate the background image color.
     pub fn get_background_color(self, hash: &[u8]) -> RGB {
         match self {
             Theme::Selection {
@@ -185,6 +187,9 @@ impl Default for Theme {
     }
 }
 
+/// The default theme.
+/// This is a muted pastel theme.
+/// The original color theme, before theme customization existed.
 pub fn default_theme() -> Theme {
     Theme::Range {
         hue_min: 0.0,
