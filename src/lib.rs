@@ -214,7 +214,7 @@ impl Identicon {
             .map_err(|_| error::IdenticonError::SaveImageError)
     }
 
-    /// Export a PNG file buffer as a Vec<u8>.
+    /// Export a PNG file buffer as a `Vec<u8>`.
     ///
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
@@ -234,7 +234,7 @@ impl Identicon {
         Ok(buffer)
     }
 
-    /// Export a JPEG file buffer as a Vec<u8>.
+    /// Export a JPEG file buffer as a `Vec<u8>`.
     ///
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
