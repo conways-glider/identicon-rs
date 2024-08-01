@@ -16,7 +16,7 @@ use image::codecs::png::PngEncoder;
 use image::imageops::FilterType;
 use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
 use sha3::{Digest, Sha3_256};
-use theme::Theme;
+use theme::{HSLRange, Theme};
 
 #[cfg(feature = "async")]
 use Arc as SharedPtr;

@@ -3,10 +3,10 @@ use crate::{color::RGB, map_values::map_values};
 /// Trait defining requirements for an identicon theme
 pub trait Theme {
     /// This should return the main color within the identicon image
-    fn main_color(&self, hash: &[u8]) -> RGB;
+    fn main_color(&self, hash: &[u8]) -> Result<RGB, ()>;
 
     /// This should return the background color within the identicon image
-    fn background_color(&self, hash: &[u8]) -> RGB;
+    fn background_color(&self, hash: &[u8]) -> Result<RGB, ()>;
 }
 
 /// Simple selection theme struct
@@ -27,14 +27,22 @@ pub struct Selection {
 }
 
 impl Theme for Selection {
-    fn main_color(&self, hash: &[u8]) -> RGB {
-        let index = hash[0 % hash.len()] as usize % self.main.len();
-        self.main[index]
+    fn main_color(&self, hash: &[u8]) -> Result<RGB, ()> {
+        if self.main.is_empty() {
+            Err(())
+        } else {
+            let index = hash[0 % hash.len()] as usize % self.main.len();
+            Ok(self.main[index])
+        }
     }
 
-    fn background_color(&self, hash: &[u8]) -> RGB {
-        let index = hash[2 % hash.len()] as usize % self.background.len();
-        self.background[index]
+    fn background_color(&self, hash: &[u8]) -> Result<RGB, ()> {
+        if self.background.is_empty() {
+            Err(())
+        } else {
+            let index = hash[2 % hash.len()] as usize % self.background.len();
+            Ok(self.background[index])
+        }
     }
 }
 
@@ -79,8 +87,17 @@ pub struct HSLRange {
     background: Vec<RGB>,
 }
 
+impl HSLRange {
+    fn validate(&self) -> Result<(), ()> {
+        todo!()
+    }
+}
+
 impl Theme for HSLRange {
-    fn main_color(&self, hash: &[u8]) -> RGB {
+    fn main_color(&self, hash: &[u8]) -> Result<RGB, ()> {
+        // Validate the fields
+        self.validate()?;
+
         // Compute hash for hue space in larger bitspace
         let hue_hash = ((hash[0 % hash.len()] as u16) << 8) | hash[1 % hash.len()] as u16;
 
@@ -138,16 +155,20 @@ impl Theme for HSLRange {
         let green = (g_prime + m) * 255.0;
         let blue = (b_prime + m) * 255.0;
 
-        RGB {
+        Ok(RGB {
             red: red as u8,
             green: green as u8,
             blue: blue as u8,
-        }
+        })
     }
 
-    fn background_color(&self, hash: &[u8]) -> RGB {
-        let index = hash[2 % hash.len()] as usize % self.background.len();
-        self.background[index]
+    fn background_color(&self, hash: &[u8]) -> Result<RGB, ()> {
+        if self.background.is_empty() {
+            Err(())
+        } else {
+            let index = hash[2 % hash.len()] as usize % self.background.len();
+            Ok(self.background[index])
+        }
     }
 }
 
