@@ -23,11 +23,22 @@ impl From<(u8, u8, u8)> for RGB {
     }
 }
 
+/// Trait defining requirements for an identicon theme
 pub trait Themey {
+    /// This should return the main color within the identicon image
     fn main_color(&self, hash: &[u8]) -> RGB;
+
+    /// This should return the background color within the identicon image
     fn background_color(&self, hash: &[u8]) -> RGB;
 }
 
+/// Simple selection theme struct
+///
+/// This will choose a predefined main color and background color based on the hash.
+///
+/// Both the main and background colors are defined as a `Vec<RGB>`.
+///
+/// Implements [Themey]
 pub struct Selection {
     /// A vector of input colors to choose from based on the input hash.
     /// This can be a vector of one value to allow for constant image colors.
@@ -50,6 +61,13 @@ impl Themey for Selection {
     }
 }
 
+/// Complex HSL Range theme struct
+///
+/// This will generate a main color within the defined HSL Range.
+///
+/// The background color is based on a predefined `Vec<RGB>` and the color is selected by the hash value.
+///
+/// Implements [Themey]
 pub struct HSLRange {
         /// The minimum hue
         /// A value between 0.0 and 360.0
@@ -156,7 +174,8 @@ impl Themey for HSLRange {
     }
 }
 
-/// The default theme.
+/// The default theme
+///
 /// This is a muted pastel theme.
 /// The original color theme, before theme customization existed.
 pub fn default_theme() -> crate::SharedPtr<dyn Themey> {
