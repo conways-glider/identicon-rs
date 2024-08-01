@@ -29,6 +29,10 @@ jobs:
         run: cargo doc --no-deps
       - name: Add redirect
         run: echo '<meta http-equiv="refresh" content="0;url=identicon_rs/index.html">' > target/doc/index.html
+      - name: Make example image folder
+        run: mkdir -p target/doc/identicon_rs/examples
+      - name: Copy example images
+        run: cp examples/*.png target/doc/identicon_rs/examples
       - name: Remove lock file
         run: rm target/doc/.lock
       - name: Upload artifact
