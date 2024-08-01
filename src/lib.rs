@@ -24,11 +24,14 @@ use Arc as SharedPtr;
 #[cfg(not(feature = "async"))]
 use Rc as SharedPtr;
 
-/// Identicon errors.
+/// Identicon errors
 pub mod error;
 
-/// Theme objects and color settings.
+/// Theme Trait and Structs
 pub mod theme;
+
+/// Color Structs and Implementations
+pub mod color;
 
 mod grid;
 mod map_values;
@@ -293,7 +296,7 @@ impl FromStr for Identicon {
 
 #[cfg(test)]
 mod tests {
-    use crate::{theme::RGB, Identicon};
+    use crate::{color::RGB, Identicon};
 
     #[test]
     fn consistency() {
