@@ -94,12 +94,16 @@ impl Theme {
                 background: _,
             } => {
                 // Compute hash for hue space in larger bitspace
-                let hue_hash_1 = (hash[0 % hash.len()] as u16) << 8;
-                let hue_hash_2 = hash[1 % hash.len()] as u16;
-                let hue_hash = (hue_hash_1 | hue_hash_2) as u16;
+                let hue_hash = ((hash[0 % hash.len()] as u16) << 8) | hash[1 % hash.len()] as u16;
 
                 // Compute HSL values
-                let hash_hue = map_values(hue_hash as f32, 0.0, 4095.0, hue_min, hue_max);
+                let hash_hue = map_values(
+                    hue_hash as f32,
+                    u16::MIN as f32,
+                    u16::MAX as f32,
+                    hue_min,
+                    hue_max,
+                );
 
                 // Handle 0 degree hue is equivalent to 360 degree hue
                 let hue = hash_hue % 360.0;
@@ -107,8 +111,8 @@ impl Theme {
                 // Saturation should be between 0.5 and 0.75 for pastel colors
                 let saturation = map_values(
                     hash[2 % hash.len()] as f32,
-                    0.0,
-                    255.0,
+                    u8::MIN as f32,
+                    u8::MAX as f32,
                     saturation_min,
                     saturation_max,
                 ) / 100.0;
@@ -116,8 +120,8 @@ impl Theme {
                 // Lightness should be between 0.6 and 0.70 for pastel colors
                 let lightness = map_values(
                     hash[3 % hash.len()] as f32,
-                    0.0,
-                    255.0,
+                    u8::MIN as f32,
+                    u8::MAX as f32,
                     lightness_min,
                     lightness_max,
                 ) / 100.0;
