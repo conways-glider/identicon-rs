@@ -152,6 +152,17 @@ impl Identicon {
         self
     }
 
+    /// Gets the current theme.
+    pub fn theme(&self) -> SharedPtr<dyn Theme> {
+        self.theme.clone()
+    }
+
+    /// Sets the current identicon theme.
+    pub fn set_theme(&mut self, theme: SharedPtr<dyn Theme>) -> &mut Self {
+        self.theme = theme;
+        self
+    }
+
     fn hash_value(input_value: &str) -> Vec<u8> {
         let input_trimmed = input_value.trim();
         Sha3_256::digest(input_trimmed.as_bytes())
