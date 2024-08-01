@@ -14,6 +14,7 @@ keywords = ["image", "identicon", "avatar"]
 categories = ["graphics", "multimedia::images", "value-formatting", "visualization"]
 
 [features]
+default = []
 async = []
 
 [dependencies]
