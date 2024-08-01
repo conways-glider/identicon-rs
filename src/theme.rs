@@ -209,3 +209,7 @@ pub fn default_theme() -> Theme {
         }],
     }
 }
+
+#[cfg(test)]
+mod tests {
+}
