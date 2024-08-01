@@ -16,7 +16,7 @@ use image::codecs::png::PngEncoder;
 use image::imageops::FilterType;
 use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
 use sha3::{Digest, Sha3_256};
-use theme::{HSLRange, Themey};
+use theme::Themey;
 
 #[cfg(feature = "async")]
 use Arc as SharedPtr;
@@ -267,7 +267,7 @@ impl Default for Identicon {
             size: 5,
             scale: 500,
             mirrored: true,
-            theme: theme,
+            theme,
         }
     }
 }
@@ -282,7 +282,10 @@ impl FromStr for Identicon {
 
 #[cfg(test)]
 mod tests {
-    use crate::{theme::{Themey, RGB}, Identicon};
+    use crate::{
+        theme::RGB,
+        Identicon,
+    };
 
     #[test]
     fn consistency() {
@@ -338,9 +341,7 @@ mod tests {
 
     #[test]
     fn getters_work() {
-        let identicon = Identicon::new("test")
-            .set_border(10)
-            .clone();
+        let identicon = Identicon::new("test").set_border(10).clone();
 
         assert_eq!(identicon.border(), identicon.border);
     }

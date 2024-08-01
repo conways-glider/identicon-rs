@@ -69,37 +69,37 @@ impl Themey for Selection {
 ///
 /// Implements [Themey]
 pub struct HSLRange {
-        /// The minimum hue
-        /// A value between 0.0 and 360.0
-        hue_min: f32,
+    /// The minimum hue
+    /// A value between 0.0 and 360.0
+    hue_min: f32,
 
-        /// The maximum hue
-        /// A value between 0.0 and 360.0
-        hue_max: f32,
+    /// The maximum hue
+    /// A value between 0.0 and 360.0
+    hue_max: f32,
 
-        /// The minimum saturation
-        /// A value between 0.0 and 100.0 as a percent.
-        /// e.g. 75.0 will become 0.750 in a HSL calculation.
-        saturation_min: f32,
+    /// The minimum saturation
+    /// A value between 0.0 and 100.0 as a percent.
+    /// e.g. 75.0 will become 0.750 in a HSL calculation.
+    saturation_min: f32,
 
-        /// The maximum saturation
-        /// A value between 0.0 and 100.0 as a percent.
-        /// e.g. 75.0 will become 0.750 in a HSL calculation.
-        saturation_max: f32,
+    /// The maximum saturation
+    /// A value between 0.0 and 100.0 as a percent.
+    /// e.g. 75.0 will become 0.750 in a HSL calculation.
+    saturation_max: f32,
 
-        /// The minimum lightness
-        /// A value between 0.0 and 100.0 as a percent.
-        /// e.g. 75.0 will become 0.750 in a HSL calculation.
-        lightness_min: f32,
+    /// The minimum lightness
+    /// A value between 0.0 and 100.0 as a percent.
+    /// e.g. 75.0 will become 0.750 in a HSL calculation.
+    lightness_min: f32,
 
-        /// The maximum lightness
-        /// A value between 0.0 and 100.0 as a percent.
-        /// e.g. 75.0 will become 0.750 in a HSL calculation.
-        lightness_max: f32,
+    /// The maximum lightness
+    /// A value between 0.0 and 100.0 as a percent.
+    /// e.g. 75.0 will become 0.750 in a HSL calculation.
+    lightness_max: f32,
 
-        /// A vector of background colors to choose from based on the input hash.
-        /// This can be a vector of one value to allow for constant backgrounds.
-        background: Vec<RGB>,
+    /// A vector of background colors to choose from based on the input hash.
+    /// This can be a vector of one value to allow for constant backgrounds.
+    background: Vec<RGB>,
 }
 
 impl Themey for HSLRange {
