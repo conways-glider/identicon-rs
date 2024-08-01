@@ -1,5 +1,4 @@
 use identicon_rs::error::IdenticonError;
-use identicon_rs::theme::HSLRange;
 use identicon_rs::Identicon;
 
 fn main() -> Result<(), IdenticonError> {
