@@ -36,9 +36,9 @@ The repository contains an example webservice that you can run with `cargo run -
 You will obtain images analogous to the following ones:
 
 <p align="middle">
-  <img src="/examples/example1.png" width="100" />
-  <img src="/examples/example2.png" width="100" />
-  <img src="/examples/example3.png" width="100" />
+  <img src="examples/example1.png" width="100" />
+  <img src="examples/example2.png" width="100" />
+  <img src="examples/example3.png" width="100" />
 </p>
 
 ## License
