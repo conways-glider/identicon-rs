@@ -2,6 +2,12 @@
 #![forbid(unsafe_code)]
 #![forbid(missing_docs)]
 
+#[cfg(not(feature = "async"))]
+use std::rc::Rc;
+
+#[cfg(feature = "async")]
+use std::sync::Arc;
+
 use std::str::FromStr;
 
 use crate::error::IdenticonError;
@@ -10,6 +16,13 @@ use image::codecs::png::PngEncoder;
 use image::imageops::FilterType;
 use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
 use sha3::{Digest, Sha3_256};
+use theme::{HSLRange, Themey};
+
+#[cfg(feature = "async")]
+use Arc as SharedPtr;
+
+#[cfg(not(feature = "async"))]
+use Rc as SharedPtr;
 
 /// Identicon errors.
 pub mod error;
@@ -23,15 +36,14 @@ mod map_values;
 /// Generic Identicon struct.
 ///
 /// This is the base struct to be used.
-#[derive(Clone, PartialEq, PartialOrd, Debug)]
+#[derive(Clone)]
 pub struct Identicon {
     hash: Vec<u8>,
     border: u32,
     size: u32,
     scale: u32,
-    background_color: (u8, u8, u8),
     mirrored: bool,
-    theme: theme::Theme,
+    theme: SharedPtr<dyn Themey>,
 }
 
 /// Generates a new identicon.
@@ -52,8 +64,8 @@ impl Identicon {
     /// - scale: 500
     /// - background_color: (240, 240, 240)
     /// - mirrored: true
-    pub fn new(input_value: &str) -> Self {
-        let mut identicon = Self::default();
+    pub fn new(input_value: &str) -> Identicon {
+        let mut identicon = Identicon::default();
         identicon.set_input(input_value);
         identicon
     }
@@ -127,19 +139,6 @@ impl Identicon {
         }
     }
 
-    /// Gets the identicon background color.
-    pub fn background_color(&self) -> (u8, u8, u8) {
-        self.background_color
-    }
-
-    /// Sets the background, non-active color of the identicon.
-    ///
-    /// This is a tuble of (red, green, blue) values.
-    pub fn set_background_color(&mut self, background_color: (u8, u8, u8)) -> &mut Self {
-        self.background_color = background_color;
-        self
-    }
-
     /// Gets if the identicon is mirrored.
     pub fn mirrored(&self) -> bool {
         self.mirrored
@@ -166,8 +165,8 @@ impl Identicon {
         let grid = grid::generate_full_grid(self.size, &self.hash);
 
         // Create pixel objects
-        let color_active = self.theme.clone().get_main_color(&self.hash);
-        let color_background = self.theme.clone().get_background_color(&self.hash);
+        let color_active = self.theme.main_color(&self.hash);
+        let color_background = self.theme.background_color(&self.hash);
         let pixel_active = image::Rgb([color_active.red, color_active.green, color_active.blue]);
         let pixel_background = image::Rgb([
             color_background.red,
@@ -261,19 +260,14 @@ impl Identicon {
 
 impl Default for Identicon {
     fn default() -> Self {
-        let default_background_color = 240;
+        let theme = theme::default_theme();
         Self {
             hash: Self::hash_value(""),
             border: 50,
             size: 5,
             scale: 500,
-            background_color: (
-                default_background_color,
-                default_background_color,
-                default_background_color,
-            ),
             mirrored: true,
-            theme: theme::default_theme(),
+            theme: theme,
         }
     }
 }
@@ -282,13 +276,13 @@ impl FromStr for Identicon {
     type Err = IdenticonError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self::new(s))
+        Ok(Identicon::new(s))
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{theme::RGB, Identicon};
+    use crate::{theme::{Themey, RGB}, Identicon};
 
     #[test]
     fn consistency() {
@@ -300,7 +294,7 @@ mod tests {
 
         let image = Identicon::new("test");
         let grid = crate::grid::generate_full_grid(image.size, &image.hash);
-        let color = crate::theme::Theme::default().get_main_color(&image.hash);
+        let color = crate::theme::default_theme().main_color(&image.hash);
 
         assert_eq!(RGB::from(expected_color), color);
 
@@ -331,21 +325,21 @@ mod tests {
     fn chained_setters_work() {
         let identicon_chained = Identicon::new("test")
             .set_border(10)
-            .set_background_color((0, 0, 0))
+            .set_mirrored(false)
             .clone();
 
         let mut identicon_mutated = Identicon::new("test");
         identicon_mutated.set_border(10);
-        identicon_mutated.set_background_color((0, 0, 0));
+        identicon_mutated.set_mirrored(false);
 
-        assert_eq!(identicon_chained, identicon_mutated);
+        assert_eq!(identicon_chained.border(), identicon_mutated.border());
+        assert_eq!(identicon_chained.mirrored(), identicon_mutated.mirrored());
     }
 
     #[test]
     fn getters_work() {
         let identicon = Identicon::new("test")
             .set_border(10)
-            .set_background_color((0, 0, 0))
             .clone();
 
         assert_eq!(identicon.border(), identicon.border);
@@ -355,13 +349,13 @@ mod tests {
     fn from_str_works() {
         let identicon = Identicon::new("test");
         let identicon_from_str = "test".parse::<Identicon>().unwrap();
-        assert_eq!(identicon, identicon_from_str);
+        assert_eq!(identicon.hash, identicon_from_str.hash);
     }
 
     #[test]
     fn from_str_failure_works() {
         let identicon = Identicon::new("test");
         let identicon_from_str = "test1".parse::<Identicon>().unwrap();
-        assert_ne!(identicon, identicon_from_str);
+        assert_ne!(identicon.hash, identicon_from_str.hash);
     }
 }
