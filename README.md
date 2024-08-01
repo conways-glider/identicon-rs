@@ -7,6 +7,11 @@
 
 This is an Identicon implementation in rust.
 
+## Documentation
+
+- [docs.rs](https://docs.rs/identicon-rs)
+- [GitHub Pages](https://conways-glider.github.io/identicon-rs/)
+
 ## Example
 
 ```rust
