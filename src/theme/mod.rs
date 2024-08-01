@@ -1,12 +1,19 @@
+use error::ThemeError;
+
 use crate::{color::RGB, map_values::map_values};
+
+/// Theme Errors
+///
+/// Identicon Errors can wrap these errors
+pub mod error;
 
 /// Trait defining requirements for an identicon theme
 pub trait Theme {
     /// This should return the main color within the identicon image
-    fn main_color(&self, hash: &[u8]) -> RGB;
+    fn main_color(&self, hash: &[u8]) -> Result<RGB, ThemeError>;
 
     /// This should return the background color within the identicon image
-    fn background_color(&self, hash: &[u8]) -> RGB;
+    fn background_color(&self, hash: &[u8]) -> Result<RGB, ThemeError>;
 }
 
 /// Simple selection theme struct
@@ -27,14 +34,26 @@ pub struct Selection {
 }
 
 impl Theme for Selection {
-    fn main_color(&self, hash: &[u8]) -> RGB {
-        let index = hash[0 % hash.len()] as usize % self.main.len();
-        self.main[index]
+    fn main_color(&self, hash: &[u8]) -> Result<RGB, ThemeError> {
+        if self.main.is_empty() {
+            Err(ThemeError::ThemeValidationError(
+                "main color selection is empty".to_string(),
+            ))
+        } else {
+            let index = hash[0 % hash.len()] as usize % self.main.len();
+            Ok(self.main[index])
+        }
     }
 
-    fn background_color(&self, hash: &[u8]) -> RGB {
-        let index = hash[2 % hash.len()] as usize % self.background.len();
-        self.background[index]
+    fn background_color(&self, hash: &[u8]) -> Result<RGB, ThemeError> {
+        if self.background.is_empty() {
+            Err(ThemeError::ThemeValidationError(
+                "background color selection is empty".to_string(),
+            ))
+        } else {
+            let index = hash[2 % hash.len()] as usize % self.background.len();
+            Ok(self.background[index])
+        }
     }
 }
 
@@ -79,8 +98,31 @@ pub struct HSLRange {
     background: Vec<RGB>,
 }
 
+impl HSLRange {
+    fn validate(&self) -> Result<(), ThemeError> {
+        if self.hue_max < self.hue_min {
+            Err(ThemeError::ThemeValidationError(
+                "hue_max must be larger than hue_min".to_string(),
+            ))
+        } else if self.saturation_max < self.saturation_min {
+            Err(ThemeError::ThemeValidationError(
+                "saturation_max must be larger than saturation_min".to_string(),
+            ))
+        } else if self.lightness_max < self.lightness_min {
+            Err(ThemeError::ThemeValidationError(
+                "lightness_max must be larger than lightness_min".to_string(),
+            ))
+        } else {
+            Ok(())
+        }
+    }
+}
+
 impl Theme for HSLRange {
-    fn main_color(&self, hash: &[u8]) -> RGB {
+    fn main_color(&self, hash: &[u8]) -> Result<RGB, ThemeError> {
+        // Validate the fields
+        self.validate()?;
+
         // Compute hash for hue space in larger bitspace
         let hue_hash = ((hash[0 % hash.len()] as u16) << 8) | hash[1 % hash.len()] as u16;
 
@@ -138,16 +180,22 @@ impl Theme for HSLRange {
         let green = (g_prime + m) * 255.0;
         let blue = (b_prime + m) * 255.0;
 
-        RGB {
+        Ok(RGB {
             red: red as u8,
             green: green as u8,
             blue: blue as u8,
-        }
+        })
     }
 
-    fn background_color(&self, hash: &[u8]) -> RGB {
-        let index = hash[2 % hash.len()] as usize % self.background.len();
-        self.background[index]
+    fn background_color(&self, hash: &[u8]) -> Result<RGB, ThemeError> {
+        if self.background.is_empty() {
+            Err(ThemeError::ThemeValidationError(
+                "background color selection is empty".to_string(),
+            ))
+        } else {
+            let index = hash[2 % hash.len()] as usize % self.background.len();
+            Ok(self.background[index])
+        }
     }
 }
 
