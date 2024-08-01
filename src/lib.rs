@@ -289,7 +289,7 @@ mod tests {
 
     #[test]
     fn consistency() {
-        let expected_color = (183, 212, 111);
+        let expected_color = RGB { red: 183, green: 212, blue: 111 };
         let expected_grid = vec![
             true, true, true, true, false, true, true, true, false, true, true, true, false, true,
             true, false, true, true, true, true, true, true, false, true, true,
@@ -299,7 +299,7 @@ mod tests {
         let grid = crate::grid::generate_full_grid(image.size, &image.hash);
         let color = crate::theme::default_theme().main_color(&image.hash);
 
-        assert_eq!(RGB::from(expected_color), color);
+        assert_eq!(expected_color, color);
 
         assert_eq!(expected_grid, grid);
     }
