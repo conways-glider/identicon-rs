@@ -293,14 +293,15 @@ impl FromStr for Identicon {
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        theme::RGB,
-        Identicon,
-    };
+    use crate::{theme::RGB, Identicon};
 
     #[test]
     fn consistency() {
-        let expected_color = RGB { red: 183, green: 212, blue: 111 };
+        let expected_color = RGB {
+            red: 183,
+            green: 212,
+            blue: 111,
+        };
         let expected_grid = vec![
             true, true, true, true, false, true, true, true, false, true, true, true, false, true,
             true, false, true, true, true, true, true, true, false, true, true,

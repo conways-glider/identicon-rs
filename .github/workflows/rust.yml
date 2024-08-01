@@ -14,11 +14,14 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        features: ["", "async"]
     steps:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@stable
     - name: Check
-      run: cargo check --verbose
+      run: cargo check --verbose --features ${{ matrix.features }}
 
   test:
     runs-on: ubuntu-latest
