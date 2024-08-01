@@ -24,7 +24,7 @@ impl From<(u8, u8, u8)> for RGB {
 }
 
 /// Trait defining requirements for an identicon theme
-pub trait Themey {
+pub trait Theme {
     /// This should return the main color within the identicon image
     fn main_color(&self, hash: &[u8]) -> RGB;
 
@@ -49,7 +49,7 @@ pub struct Selection {
     background: Vec<RGB>,
 }
 
-impl Themey for Selection {
+impl Theme for Selection {
     fn main_color(&self, hash: &[u8]) -> RGB {
         let index = hash[0 % hash.len()] as usize % self.main.len();
         self.main[index]
@@ -102,7 +102,7 @@ pub struct HSLRange {
     background: Vec<RGB>,
 }
 
-impl Themey for HSLRange {
+impl Theme for HSLRange {
     fn main_color(&self, hash: &[u8]) -> RGB {
         // Compute hash for hue space in larger bitspace
         let hue_hash = ((hash[0 % hash.len()] as u16) << 8) | hash[1 % hash.len()] as u16;
@@ -178,7 +178,7 @@ impl Themey for HSLRange {
 ///
 /// This is a muted pastel theme.
 /// The original color theme, before theme customization existed.
-pub fn default_theme() -> crate::SharedPtr<dyn Themey> {
+pub fn default_theme() -> crate::SharedPtr<dyn Theme> {
     crate::SharedPtr::new(HSLRange {
         hue_min: 0.0,
         hue_max: 360.0,

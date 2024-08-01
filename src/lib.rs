@@ -16,7 +16,7 @@ use image::codecs::png::PngEncoder;
 use image::imageops::FilterType;
 use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
 use sha3::{Digest, Sha3_256};
-use theme::Themey;
+use theme::Theme;
 
 #[cfg(feature = "async")]
 use Arc as SharedPtr;
@@ -43,7 +43,7 @@ pub struct Identicon {
     size: u32,
     scale: u32,
     mirrored: bool,
-    theme: SharedPtr<dyn Themey>,
+    theme: SharedPtr<dyn Theme>,
 }
 
 /// Generates a new identicon.
