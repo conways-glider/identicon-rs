@@ -17,7 +17,6 @@ pub mod error;
 /// Theme objects and color settings.
 pub mod theme;
 
-mod color;
 mod grid;
 mod map_values;
 
@@ -167,12 +166,13 @@ impl Identicon {
         let grid = grid::generate_full_grid(self.size, &self.hash);
 
         // Create pixel objects
-        let color_active = color::generate_color(&self.hash);
-        let pixel_active = image::Rgb([color_active.0, color_active.1, color_active.2]);
+        let color_active = self.theme.clone().get_main_color(&self.hash);
+        let color_background = self.theme.clone().get_background_color(&self.hash);
+        let pixel_active = image::Rgb([color_active.red, color_active.green, color_active.blue]);
         let pixel_background = image::Rgb([
-            self.background_color.0,
-            self.background_color.1,
-            self.background_color.2,
+            color_background.red,
+            color_background.green,
+            color_background.blue,
         ]);
 
         // Create image buffer from grid
@@ -273,7 +273,7 @@ impl Default for Identicon {
                 default_background_color,
             ),
             mirrored: true,
-            theme: theme::DEFAULT_THEME
+            theme: theme::default_theme(),
         }
     }
 }
@@ -288,7 +288,7 @@ impl FromStr for Identicon {
 
 #[cfg(test)]
 mod tests {
-    use crate::Identicon;
+    use crate::{theme::RGB, Identicon};
 
     #[test]
     fn consistency() {
@@ -300,9 +300,9 @@ mod tests {
 
         let image = Identicon::new("test");
         let grid = crate::grid::generate_full_grid(image.size, &image.hash);
-        let color = crate::color::generate_color(&image.hash);
+        let color = crate::theme::Theme::default().get_main_color(&image.hash);
 
-        assert_eq!(expected_color, color);
+        assert_eq!(RGB::from(expected_color), color);
 
         assert_eq!(expected_grid, grid);
     }
