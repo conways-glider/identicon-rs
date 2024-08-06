@@ -97,6 +97,7 @@ pub struct HSLRange {
 
     /// A vector of background colors to choose from based on the input hash.
     /// This can be a vector of one value to allow for constant backgrounds.
+    // background: Vec<RGB>,
     background: Vec<RGB>,
 }
 
@@ -219,4 +220,288 @@ pub fn default_theme() -> Arc<dyn Theme + Send + Sync> {
             blue: 240,
         }],
     })
+}
+
+/// The default theme
+///
+/// This is a muted pastel theme.
+/// The original color theme, before theme customization existed.
+pub fn pastel_selection_theme() -> Arc<dyn Theme + Send + Sync> {
+    let main = vec![
+        RGB {
+            red: 255,
+            green: 173,
+            blue: 173,
+        },
+        RGB {
+            red: 255,
+            green: 214,
+            blue: 165,
+        },
+        RGB {
+            red: 253,
+            green: 255,
+            blue: 182,
+        },
+        RGB {
+            red: 202,
+            green: 255,
+            blue: 191,
+        },
+        RGB {
+            red: 155,
+            green: 246,
+            blue: 255,
+        },
+        RGB {
+            red: 160,
+            green: 196,
+            blue: 255,
+        },
+        RGB {
+            red: 189,
+            green: 178,
+            blue: 255,
+        },
+        RGB {
+            red: 255,
+            green: 198,
+            blue: 255,
+        },
+    ];
+    let background = vec![RGB {
+        red: 240,
+        green: 240,
+        blue: 240,
+    }];
+
+    Arc::new(Selection { main, background })
+}
+
+#[cfg(test)]
+mod tests {
+    use std::sync::Arc;
+
+    use crate::{color::RGB, hash};
+
+    use super::{default_theme, pastel_selection_theme, HSLRange, Selection, Theme};
+    const CONSISTENCY_STRING_1: &str = "TEST CONSISTENCY";
+    const CONSISTENCY_STRING_2: &str = "TEST CONSISTENCY ALTERNATE";
+    const CONSISTENCY_STRING_3: &str = "CONSISTENCY TEST INPUT";
+
+    fn test_theme_consistency(
+        input: &str,
+        theme: Arc<dyn Theme>,
+        expected_main_color: RGB,
+        expected_background_color: RGB,
+    ) {
+        let hash = hash::hash_value(input);
+
+        let main_color = theme
+            .main_color(&hash)
+            .expect("could not generate main color");
+        let background_color = theme
+            .background_color(&hash)
+            .expect("could not generate background color");
+
+        assert_eq!(expected_main_color, main_color);
+        assert_eq!(expected_background_color, background_color);
+    }
+
+    #[test]
+    fn hsl_range_theme_consistency() {
+        let expected_main_color = crate::color::RGB {
+            red: 116,
+            green: 93,
+            blue: 222,
+        };
+        let expected_background_color = crate::color::RGB {
+            red: 240,
+            green: 240,
+            blue: 240,
+        };
+
+        test_theme_consistency(
+            CONSISTENCY_STRING_1,
+            default_theme(),
+            expected_main_color,
+            expected_background_color,
+        );
+
+        let expected_main_color = crate::color::RGB {
+            red: 94,
+            green: 225,
+            blue: 227,
+        };
+        let expected_background_color = crate::color::RGB {
+            red: 240,
+            green: 240,
+            blue: 240,
+        };
+
+        test_theme_consistency(
+            CONSISTENCY_STRING_2,
+            default_theme(),
+            expected_main_color,
+            expected_background_color,
+        );
+    }
+
+    #[test]
+    fn hsl_range_theme_multiple_background_consistency() {
+        let theme = Arc::new(HSLRange {
+            hue_min: 0.0,
+            hue_max: 100.0,
+            saturation_min: 0.0,
+            saturation_max: 100.0,
+            lightness_min: 0.0,
+            lightness_max: 100.0,
+            background: vec![
+                RGB {
+                    red: 0,
+                    green: 0,
+                    blue: 0,
+                },
+                RGB {
+                    red: 255,
+                    green: 255,
+                    blue: 255,
+                },
+            ],
+        });
+
+        let expected_main_color = crate::color::RGB {
+            red: 67,
+            green: 77,
+            blue: 16,
+        };
+        let expected_background_color = crate::color::RGB {
+            red: 0,
+            green: 0,
+            blue: 0,
+        };
+
+        test_theme_consistency(
+            CONSISTENCY_STRING_1,
+            theme.clone(),
+            expected_main_color,
+            expected_background_color,
+        );
+
+        let expected_main_color = crate::color::RGB {
+            red: 232,
+            green: 253,
+            blue: 218,
+        };
+        let expected_background_color = crate::color::RGB {
+            red: 255,
+            green: 255,
+            blue: 255,
+        };
+
+        test_theme_consistency(
+            CONSISTENCY_STRING_3,
+            theme,
+            expected_main_color,
+            expected_background_color,
+        );
+    }
+
+    #[test]
+    fn selection_theme_consistency() {
+        let expected_main_color = crate::color::RGB {
+            red: 253,
+            green: 255,
+            blue: 182,
+        };
+        let expected_background_color = crate::color::RGB {
+            red: 240,
+            green: 240,
+            blue: 240,
+        };
+
+        test_theme_consistency(
+            CONSISTENCY_STRING_1,
+            pastel_selection_theme(),
+            expected_main_color,
+            expected_background_color,
+        );
+
+        let expected_main_color = crate::color::RGB {
+            red: 255,
+            green: 173,
+            blue: 173,
+        };
+        let expected_background_color = crate::color::RGB {
+            red: 240,
+            green: 240,
+            blue: 240,
+        };
+
+        test_theme_consistency(
+            CONSISTENCY_STRING_2,
+            pastel_selection_theme(),
+            expected_main_color,
+            expected_background_color,
+        );
+    }
+
+    #[test]
+    fn selection_theme_multiple_background_consistency() {
+        let theme = Arc::new(Selection {
+            main: vec![RGB {
+                red: 0,
+                green: 0,
+                blue: 0,
+            }],
+            background: vec![
+                RGB {
+                    red: 0,
+                    green: 0,
+                    blue: 0,
+                },
+                RGB {
+                    red: 255,
+                    green: 255,
+                    blue: 255,
+                },
+            ],
+        });
+
+        let expected_main_color = crate::color::RGB {
+            red: 0,
+            green: 0,
+            blue: 0,
+        };
+        let expected_background_color = crate::color::RGB {
+            red: 0,
+            green: 0,
+            blue: 0,
+        };
+
+        test_theme_consistency(
+            CONSISTENCY_STRING_1,
+            theme.clone(),
+            expected_main_color,
+            expected_background_color,
+        );
+
+        let expected_main_color = crate::color::RGB {
+            red: 0,
+            green: 0,
+            blue: 0,
+        };
+        let expected_background_color = crate::color::RGB {
+            red: 255,
+            green: 255,
+            blue: 255,
+        };
+
+        test_theme_consistency(
+            CONSISTENCY_STRING_3,
+            theme,
+            expected_main_color,
+            expected_background_color,
+        );
+    }
 }

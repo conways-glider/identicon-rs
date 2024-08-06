@@ -10,7 +10,6 @@ use image::codecs::jpeg::JpegEncoder;
 use image::codecs::png::PngEncoder;
 use image::imageops::FilterType;
 use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
-use sha3::{Digest, Sha3_256};
 use theme::Theme;
 
 /// Identicon errors
@@ -23,6 +22,7 @@ pub mod theme;
 pub mod color;
 
 mod grid;
+mod hash;
 mod map_values;
 
 /// Generic Identicon struct.
@@ -64,7 +64,7 @@ impl Identicon {
 
     /// Sets the identicon input value, regenerating the hash.
     pub fn set_input(&mut self, input_value: &str) -> &mut Self {
-        self.hash = Self::hash_value(input_value);
+        self.hash = hash::hash_value(input_value);
         self
     }
 
@@ -153,13 +153,6 @@ impl Identicon {
     pub fn set_theme(&mut self, theme: Arc<dyn Theme + Send + Sync>) -> &mut Self {
         self.theme = theme;
         self
-    }
-
-    fn hash_value(input_value: &str) -> Vec<u8> {
-        let input_trimmed = input_value.trim();
-        Sha3_256::digest(input_trimmed.as_bytes())
-            .as_slice()
-            .to_vec()
     }
 
     /// Generates the DynamicImage representing the Identicon.
@@ -265,7 +258,7 @@ impl Default for Identicon {
     fn default() -> Self {
         let theme = theme::default_theme();
         Self {
-            hash: Self::hash_value(""),
+            hash: hash::hash_value(""),
             border: 50,
             size: 5,
             scale: 500,
