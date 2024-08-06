@@ -310,16 +310,8 @@ mod tests {
 
     #[test]
     fn hsl_range_theme_consistency() {
-        let expected_main_color = crate::color::RGB {
-            red: 116,
-            green: 93,
-            blue: 222,
-        };
-        let expected_background_color = crate::color::RGB {
-            red: 240,
-            green: 240,
-            blue: 240,
-        };
+        let expected_main_color: RGB = (116, 93, 222).into();
+        let expected_background_color: RGB = (240, 240, 240).into();
 
         test_theme_consistency(
             CONSISTENCY_STRING_1,
@@ -328,16 +320,8 @@ mod tests {
             expected_background_color,
         );
 
-        let expected_main_color = crate::color::RGB {
-            red: 94,
-            green: 225,
-            blue: 227,
-        };
-        let expected_background_color = crate::color::RGB {
-            red: 240,
-            green: 240,
-            blue: 240,
-        };
+        let expected_main_color: RGB = (94, 225, 227).into();
+        let expected_background_color: RGB = (240, 240, 240).into();
 
         test_theme_consistency(
             CONSISTENCY_STRING_2,
@@ -356,30 +340,11 @@ mod tests {
             saturation_max: 100.0,
             lightness_min: 0.0,
             lightness_max: 100.0,
-            background: vec![
-                RGB {
-                    red: 0,
-                    green: 0,
-                    blue: 0,
-                },
-                RGB {
-                    red: 255,
-                    green: 255,
-                    blue: 255,
-                },
-            ],
+            background: vec![(0, 0, 0).into(), (255, 255, 255).into()],
         });
 
-        let expected_main_color = crate::color::RGB {
-            red: 67,
-            green: 77,
-            blue: 16,
-        };
-        let expected_background_color = crate::color::RGB {
-            red: 0,
-            green: 0,
-            blue: 0,
-        };
+        let expected_main_color: RGB = (67, 77, 16).into();
+        let expected_background_color: RGB = (0, 0, 0).into();
 
         test_theme_consistency(
             CONSISTENCY_STRING_1,
@@ -388,16 +353,8 @@ mod tests {
             expected_background_color,
         );
 
-        let expected_main_color = crate::color::RGB {
-            red: 232,
-            green: 253,
-            blue: 218,
-        };
-        let expected_background_color = crate::color::RGB {
-            red: 255,
-            green: 255,
-            blue: 255,
-        };
+        let expected_main_color: RGB = (232, 253, 218).into();
+        let expected_background_color: RGB = (255, 255, 255).into();
 
         test_theme_consistency(
             CONSISTENCY_STRING_3,
@@ -409,16 +366,8 @@ mod tests {
 
     #[test]
     fn selection_theme_consistency() {
-        let expected_main_color = crate::color::RGB {
-            red: 253,
-            green: 255,
-            blue: 182,
-        };
-        let expected_background_color = crate::color::RGB {
-            red: 240,
-            green: 240,
-            blue: 240,
-        };
+        let expected_main_color: RGB = (253, 255, 182).into();
+        let expected_background_color: RGB = (240, 240, 240).into();
 
         test_theme_consistency(
             CONSISTENCY_STRING_1,
@@ -427,16 +376,8 @@ mod tests {
             expected_background_color,
         );
 
-        let expected_main_color = crate::color::RGB {
-            red: 255,
-            green: 173,
-            blue: 173,
-        };
-        let expected_background_color = crate::color::RGB {
-            red: 240,
-            green: 240,
-            blue: 240,
-        };
+        let expected_main_color: RGB = (255, 173, 173).into();
+        let expected_background_color: RGB = (240, 240, 240).into();
 
         test_theme_consistency(
             CONSISTENCY_STRING_2,
@@ -449,35 +390,12 @@ mod tests {
     #[test]
     fn selection_theme_multiple_background_consistency() {
         let theme = Arc::new(Selection {
-            main: vec![RGB {
-                red: 0,
-                green: 0,
-                blue: 0,
-            }],
-            background: vec![
-                RGB {
-                    red: 0,
-                    green: 0,
-                    blue: 0,
-                },
-                RGB {
-                    red: 255,
-                    green: 255,
-                    blue: 255,
-                },
-            ],
+            main: vec![(0, 0, 0).into()],
+            background: vec![(0, 0, 0).into(), (255, 255, 255).into()],
         });
 
-        let expected_main_color = crate::color::RGB {
-            red: 0,
-            green: 0,
-            blue: 0,
-        };
-        let expected_background_color = crate::color::RGB {
-            red: 0,
-            green: 0,
-            blue: 0,
-        };
+        let expected_main_color: RGB = (0, 0, 0).into();
+        let expected_background_color: RGB = (0, 0, 0).into();
 
         test_theme_consistency(
             CONSISTENCY_STRING_1,
@@ -486,16 +404,8 @@ mod tests {
             expected_background_color,
         );
 
-        let expected_main_color = crate::color::RGB {
-            red: 0,
-            green: 0,
-            blue: 0,
-        };
-        let expected_background_color = crate::color::RGB {
-            red: 255,
-            green: 255,
-            blue: 255,
-        };
+        let expected_main_color: RGB = (0, 0, 0).into();
+        let expected_background_color: RGB = (255, 255, 255).into();
 
         test_theme_consistency(
             CONSISTENCY_STRING_3,
