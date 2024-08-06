@@ -89,10 +89,10 @@ mod tests {
         let identicon_error: IdenticonError = theme_error.into();
         match identicon_error {
             IdenticonError::ThemeError(inner_error) => match inner_error {
-                ThemeError::ThemeProcessingError(_) => assert!(true),
-                _ => assert!(false, "wrong inner error type"),
+                ThemeError::ThemeProcessingError(_) => (),
+                _ => panic!("wrong inner error type"),
             },
-            _ => assert!(false, "wrong error type"),
+            _ => panic!("wrong error type"),
         }
         // assert_eq!(theme_error, identicon_error);
     }
