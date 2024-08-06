@@ -13,10 +13,6 @@ license = "MIT OR Apache-2.0"
 keywords = ["image", "identicon", "avatar"]
 categories = ["graphics", "multimedia::images", "value-formatting", "visualization"]
 
-[features]
-default = []
-async = []
-
 [dependencies]
 image = "0.25"
 sha3 = "0.10"

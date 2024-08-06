@@ -2,13 +2,8 @@
 #![forbid(unsafe_code)]
 #![forbid(missing_docs)]
 
-#[cfg(not(feature = "async"))]
-use std::rc::Rc;
-
-#[cfg(feature = "async")]
-use std::sync::Arc;
-
 use std::str::FromStr;
+use std::sync::Arc;
 
 use crate::error::IdenticonError;
 use image::codecs::jpeg::JpegEncoder;
@@ -17,12 +12,6 @@ use image::imageops::FilterType;
 use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
 use sha3::{Digest, Sha3_256};
 use theme::Theme;
-
-#[cfg(feature = "async")]
-use Arc as SharedPtr;
-
-#[cfg(not(feature = "async"))]
-use Rc as SharedPtr;
 
 /// Identicon errors
 pub mod error;
@@ -46,7 +35,7 @@ pub struct Identicon {
     size: u32,
     scale: u32,
     mirrored: bool,
-    theme: SharedPtr<dyn Theme>,
+    theme: Arc<dyn Theme + Send + Sync>,
 }
 
 /// Generates a new identicon.
@@ -156,12 +145,12 @@ impl Identicon {
     }
 
     /// Gets the current theme.
-    pub fn theme(&self) -> SharedPtr<dyn Theme> {
+    pub fn theme(&self) -> Arc<dyn Theme> {
         self.theme.clone()
     }
 
     /// Sets the current identicon theme.
-    pub fn set_theme(&mut self, theme: SharedPtr<dyn Theme>) -> &mut Self {
+    pub fn set_theme(&mut self, theme: Arc<dyn Theme + Send + Sync>) -> &mut Self {
         self.theme = theme;
         self
     }
@@ -296,6 +285,8 @@ impl FromStr for Identicon {
 
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
+
     use crate::{color::RGB, Identicon};
 
     #[test]
@@ -319,6 +310,20 @@ mod tests {
         assert_eq!(expected_color, color);
 
         assert_eq!(expected_grid, grid);
+    }
+
+    #[test]
+    fn test_send() {
+        fn assert_send<T: Send>() {}
+
+        assert_send::<Identicon>();
+    }
+
+    #[test]
+    fn test_sync() {
+        fn assert_send<T: Sync>() {}
+
+        assert_send::<Identicon>();
     }
 
     #[test]
@@ -366,14 +371,14 @@ mod tests {
     #[test]
     fn from_str_works() {
         let identicon = Identicon::new("test");
-        let identicon_from_str = "test".parse::<Identicon>().unwrap();
+        let identicon_from_str = Identicon::from_str("test").unwrap();
         assert_eq!(identicon.hash, identicon_from_str.hash);
     }
 
     #[test]
     fn from_str_failure_works() {
         let identicon = Identicon::new("test");
-        let identicon_from_str = "test1".parse::<Identicon>().unwrap();
+        let identicon_from_str = Identicon::from_str("test1").unwrap();
         assert_ne!(identicon.hash, identicon_from_str.hash);
     }
 }

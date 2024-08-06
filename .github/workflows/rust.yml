@@ -14,25 +14,19 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        features: ["default", "async"]
     steps:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@stable
     - name: Check
-      run: cargo check --verbose --features="${{ matrix.features }}"
+      run: cargo check --verbose
 
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        features: ["default", "async"]
     steps:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@stable
     - name: Run tests
-      run: cargo test --verbose --features="${{ matrix.features }}"
+      run: cargo test --verbose
 
   fmt:
     runs-on: ubuntu-latest

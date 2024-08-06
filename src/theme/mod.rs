@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use error::ThemeError;
 
 use crate::{color::RGB, map_values::map_values};
@@ -203,8 +205,8 @@ impl Theme for HSLRange {
 ///
 /// This is a muted pastel theme.
 /// The original color theme, before theme customization existed.
-pub fn default_theme() -> crate::SharedPtr<dyn Theme> {
-    crate::SharedPtr::new(HSLRange {
+pub fn default_theme() -> Arc<dyn Theme + Send + Sync> {
+    Arc::new(HSLRange {
         hue_min: 0.0,
         hue_max: 360.0,
         saturation_min: 50.0,
