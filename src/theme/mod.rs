@@ -41,7 +41,7 @@ impl Selection {
     /// `main` is used as the colors to select from for the main image color.
     /// `background` is used as the possible colors of the background.
     pub fn new(main: Vec<RGB>, background: Vec<RGB>) -> Selection {
-        Selection {main, background}
+        Selection { main, background }
     }
 }
 
@@ -124,8 +124,24 @@ impl HSLRange {
     /// They are expected to be between 0.0 and 100.0
     ///
     /// `background` is used as the possible colors of the background.
-    pub fn new(hue_min: f32, hue_max: f32, saturation_min: f32, saturation_max: f32, lightness_min: f32, lightness_max: f32, background: Vec<RGB>) -> Result<HSLRange, ThemeError> {
-        let theme = HSLRange{ hue_min, hue_max, saturation_min, saturation_max, lightness_min, lightness_max, background };
+    pub fn new(
+        hue_min: f32,
+        hue_max: f32,
+        saturation_min: f32,
+        saturation_max: f32,
+        lightness_min: f32,
+        lightness_max: f32,
+        background: Vec<RGB>,
+    ) -> Result<HSLRange, ThemeError> {
+        let theme = HSLRange {
+            hue_min,
+            hue_max,
+            saturation_min,
+            saturation_max,
+            lightness_min,
+            lightness_max,
+            background,
+        };
 
         theme.validate().map(|_| theme)
     }
