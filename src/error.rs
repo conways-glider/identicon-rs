@@ -1,6 +1,8 @@
 use thiserror::Error;
 
-/// Identicon errors.
+use crate::theme;
+
+/// Identicon errors
 #[derive(Error, Debug)]
 pub enum IdenticonError {
     /// Failed to generate the image.
@@ -34,11 +36,15 @@ pub enum IdenticonError {
         /// Currently set scale value.
         scale: u32,
     },
+
+    /// Indicates an issue with the provided theme.
+    #[error(transparent)]
+    ThemeError(#[from] theme::error::ThemeError),
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::error::IdenticonError;
+    use crate::{error::IdenticonError, theme::error::ThemeError};
 
     #[test]
     fn generate_image_error_works() {
@@ -75,5 +81,19 @@ mod tests {
         let expected_text =
             "identicon size too large: 5, must be less or equal to identicon scale: 3";
         assert_eq!(expected_text, error.to_string());
+    }
+
+    #[test]
+    fn theme_error_works() {
+        let theme_error = ThemeError::ThemeProcessingError("bad field".to_string());
+        let identicon_error: IdenticonError = theme_error.into();
+        match identicon_error {
+            IdenticonError::ThemeError(inner_error) => match inner_error {
+                ThemeError::ThemeProcessingError(_) => (),
+                _ => panic!("wrong inner error type"),
+            },
+            _ => panic!("wrong error type"),
+        }
+        // assert_eq!(theme_error, identicon_error);
     }
 }
