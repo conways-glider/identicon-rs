@@ -1,6 +1,8 @@
 #![doc = include_str!("../README.md")]
 #![forbid(unsafe_code)]
 #![forbid(missing_docs)]
+#![forbid(clippy::unwrap_used)]
+#![forbid(clippy::expect_used)]
 
 use std::str::FromStr;
 use std::sync::Arc;
