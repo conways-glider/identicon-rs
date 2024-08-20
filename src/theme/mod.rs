@@ -35,6 +35,16 @@ pub struct Selection {
     background: Vec<RGB>,
 }
 
+impl Selection {
+    /// Generates a new Selection theme
+    ///
+    /// `main` is used as the colors to select from for the main image color.
+    /// `background` is used as the possible colors of the background.
+    pub fn new(main: Vec<RGB>, background: Vec<RGB>) -> Selection {
+        Selection {main, background}
+    }
+}
+
 impl Theme for Selection {
     fn main_color(&self, hash: &[u8]) -> Result<RGB, ThemeError> {
         if self.main.is_empty() {
@@ -102,6 +112,24 @@ pub struct HSLRange {
 }
 
 impl HSLRange {
+    /// Generates a new HSLRange theme
+    ///
+    /// `hue_min` and `hue_max` are the range of possible hue values.
+    /// They are expected to be between 0.0 and 360.0
+    ///
+    /// `saturation_min` and `saturation_max` are the range of possible saturation values.
+    /// They are expected to be between 0.0 and 100.0
+    ///
+    /// `lightness_min` and `lightness_max` are the range of possible lightness values.
+    /// They are expected to be between 0.0 and 100.0
+    ///
+    /// `background` is used as the possible colors of the background.
+    pub fn new(hue_min: f32, hue_max: f32, saturation_min: f32, saturation_max: f32, lightness_min: f32, lightness_max: f32, background: Vec<RGB>) -> Result<HSLRange, ThemeError> {
+        let theme = HSLRange{ hue_min, hue_max, saturation_min, saturation_max, lightness_min, lightness_max, background };
+
+        theme.validate().map(|_| theme)
+    }
+
     fn validate(&self) -> Result<(), ThemeError> {
         if self.hue_max < self.hue_min {
             Err(ThemeError::ThemeValidationError(
