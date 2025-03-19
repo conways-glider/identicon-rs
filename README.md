@@ -1,7 +1,7 @@
 # Identicon-rs
 
 [![Rust](https://github.com/conways-glider/identicon-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/conways-glider/identicon-rs/actions/workflows/rust.yml)
-[![dependency status](https://deps.rs/crate/identicon-rs/6.0.1/status.svg)](https://deps.rs/crate/identicon-rs/6.0.1)
+[![dependency status](https://deps.rs/crate/identicon-rs/6.0.2/status.svg)](https://deps.rs/crate/identicon-rs/6.0.2)
 [![Crates.io](https://img.shields.io/crates/v/identicon-rs)](https://crates.io/crates/identicon-rs)
 [![Documentation](https://docs.rs/identicon-rs/badge.svg)](https://docs.rs/identicon-rs)
 
