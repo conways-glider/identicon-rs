@@ -2,7 +2,7 @@
 name = "identicon-rs"
 version = "6.0.1"
 authors = ["Nia Maxwell <nia@conwaysglider.com>"]
-edition = "2021"
+edition = "2024"
 readme = "README.md"
 description = """
 identicon-rs is a library built around custom generation of identicon images.
@@ -19,6 +19,6 @@ sha3 = "0.10"
 thiserror = "2.0"
 
 [dev-dependencies]
-axum = "0.7"
+axum = "0.8"
 tokio = { version = "1", features = ["full"] }
 version-sync = "0.9"

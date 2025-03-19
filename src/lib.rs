@@ -282,7 +282,7 @@ impl FromStr for Identicon {
 mod tests {
     use std::str::FromStr;
 
-    use crate::{color::RGB, Identicon};
+    use crate::{Identicon, color::RGB};
 
     #[test]
     fn consistency() {
