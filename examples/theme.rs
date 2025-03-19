@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
+use identicon_rs::Identicon;
 use identicon_rs::color::RGB;
 use identicon_rs::error::IdenticonError;
 use identicon_rs::theme::HSLRange;
-use identicon_rs::Identicon;
 
 fn main() -> Result<(), IdenticonError> {
     let identicon_theme = HSLRange::new(

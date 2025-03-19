@@ -1,11 +1,11 @@
 use std::ffi::OsStr;
 
 use axum::{
+    Router,
     extract::Path,
-    http::{header, StatusCode},
+    http::{StatusCode, header},
     response::IntoResponse,
     routing::get,
-    Router,
 };
 use identicon_rs::Identicon;
 

@@ -1,5 +1,5 @@
-use identicon_rs::error::IdenticonError;
 use identicon_rs::Identicon;
+use identicon_rs::error::IdenticonError;
 
 fn main() -> Result<(), IdenticonError> {
     let conways_glider = String::from("conways-glider");

@@ -328,7 +328,7 @@ mod tests {
 
     use crate::{color::RGB, hash};
 
-    use super::{default_theme, pastel_selection_theme, HSLRange, Selection, Theme};
+    use super::{HSLRange, Selection, Theme, default_theme, pastel_selection_theme};
     const CONSISTENCY_STRING_1: &str = "TEST CONSISTENCY";
     const CONSISTENCY_STRING_2: &str = "TEST CONSISTENCY ALTERNATE";
     const CONSISTENCY_STRING_3: &str = "CONSISTENCY TEST INPUT";
