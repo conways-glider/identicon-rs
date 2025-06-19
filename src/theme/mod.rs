@@ -432,7 +432,11 @@ mod tests {
             100.0,
             0.0,
             100.0,
-            vec![RGB { red: 255, green: 255, blue: 255 }],
+            vec![RGB {
+                red: 255,
+                green: 255,
+                blue: 255,
+            }],
         );
         assert!(theme.is_ok());
 
@@ -443,7 +447,11 @@ mod tests {
             100.0,
             0.0,
             100.0,
-            vec![RGB { red: 255, green: 255, blue: 255 }],
+            vec![RGB {
+                red: 255,
+                green: 255,
+                blue: 255,
+            }],
         );
         assert!(theme.is_err());
 
@@ -454,7 +462,11 @@ mod tests {
             50.0,
             0.0,
             100.0,
-            vec![RGB { red: 255, green: 255, blue: 255 }],
+            vec![RGB {
+                red: 255,
+                green: 255,
+                blue: 255,
+            }],
         );
         assert!(theme.is_err());
 
@@ -465,7 +477,11 @@ mod tests {
             100.0,
             100.0,
             50.0,
-            vec![RGB { red: 255, green: 255, blue: 255 }],
+            vec![RGB {
+                red: 255,
+                green: 255,
+                blue: 255,
+            }],
         );
         assert!(theme.is_err());
     }
@@ -523,13 +539,38 @@ mod tests {
 
     #[test]
     fn selection_theme_validation() {
-        let theme = Selection::new(vec![], vec![RGB { red: 255, green: 255, blue: 255 }]);
+        let theme = Selection::new(
+            vec![],
+            vec![RGB {
+                red: 255,
+                green: 255,
+                blue: 255,
+            }],
+        );
         assert!(theme.is_err());
 
-        let theme = Selection::new(vec![RGB { red: 255, green: 255, blue: 255 }], vec![]);
+        let theme = Selection::new(
+            vec![RGB {
+                red: 255,
+                green: 255,
+                blue: 255,
+            }],
+            vec![],
+        );
         assert!(theme.is_err());
 
-        let theme = Selection::new(vec![RGB { red: 255, green: 255, blue: 255 }], vec![RGB { red: 0, green: 0, blue: 0 }]);
+        let theme = Selection::new(
+            vec![RGB {
+                red: 255,
+                green: 255,
+                blue: 255,
+            }],
+            vec![RGB {
+                red: 0,
+                green: 0,
+                blue: 0,
+            }],
+        );
         assert!(theme.is_ok());
     }
 }
