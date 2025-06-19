@@ -24,7 +24,7 @@ pub trait Theme {
 ///
 /// Both the main and background colors are defined as a `Vec<RGB>`.
 ///
-/// Implements [Themey]
+/// Implements [Theme]
 pub struct Selection {
     /// A vector of input colors to choose from based on the input hash.
     /// This can be a vector of one value to allow for constant image colors.
@@ -40,8 +40,23 @@ impl Selection {
     ///
     /// `main` is used as the colors to select from for the main image color.
     /// `background` is used as the possible colors of the background.
-    pub fn new(main: Vec<RGB>, background: Vec<RGB>) -> Selection {
-        Selection { main, background }
+    pub fn new(main: Vec<RGB>, background: Vec<RGB>) -> Result<Selection, ThemeError> {
+        let theme = Selection { main, background };
+        theme.validate().map(|_| theme)
+    }
+
+    fn validate(&self) -> Result<(), ThemeError> {
+        if self.main.is_empty() {
+            Err(ThemeError::ThemeValidationError(
+                "main color selection is empty".to_string(),
+            ))
+        } else if self.background.is_empty() {
+            Err(ThemeError::ThemeValidationError(
+                "background color selection is empty".to_string(),
+            ))
+        } else {
+            Ok(())
+        }
     }
 }
 
@@ -75,7 +90,7 @@ impl Theme for Selection {
 ///
 /// The background color is based on a predefined `Vec<RGB>` and the color is selected by the hash value.
 ///
-/// Implements [Themey]
+/// Implements [Theme]
 pub struct HSLRange {
     /// The minimum hue
     /// A value between 0.0 and 360.0
@@ -409,6 +424,53 @@ mod tests {
     }
 
     #[test]
+    fn hsl_theme_validation() {
+        let theme = HSLRange::new(
+            0.0,
+            360.0,
+            0.0,
+            100.0,
+            0.0,
+            100.0,
+            vec![RGB { red: 255, green: 255, blue: 255 }],
+        );
+        assert!(theme.is_ok());
+
+        let theme = HSLRange::new(
+            360.0,
+            0.0,
+            0.0,
+            100.0,
+            0.0,
+            100.0,
+            vec![RGB { red: 255, green: 255, blue: 255 }],
+        );
+        assert!(theme.is_err());
+
+        let theme = HSLRange::new(
+            0.0,
+            360.0,
+            100.0,
+            50.0,
+            0.0,
+            100.0,
+            vec![RGB { red: 255, green: 255, blue: 255 }],
+        );
+        assert!(theme.is_err());
+
+        let theme = HSLRange::new(
+            0.0,
+            360.0,
+            0.0,
+            100.0,
+            100.0,
+            50.0,
+            vec![RGB { red: 255, green: 255, blue: 255 }],
+        );
+        assert!(theme.is_err());
+    }
+
+    #[test]
     fn selection_theme_consistency() {
         let expected_main_color: RGB = (253, 255, 182).into();
         let expected_background_color: RGB = (240, 240, 240).into();
@@ -457,5 +519,17 @@ mod tests {
             expected_main_color,
             expected_background_color,
         );
+    }
+
+    #[test]
+    fn selection_theme_validation() {
+        let theme = Selection::new(vec![], vec![RGB { red: 255, green: 255, blue: 255 }]);
+        assert!(theme.is_err());
+
+        let theme = Selection::new(vec![RGB { red: 255, green: 255, blue: 255 }], vec![]);
+        assert!(theme.is_err());
+
+        let theme = Selection::new(vec![RGB { red: 255, green: 255, blue: 255 }], vec![RGB { red: 0, green: 0, blue: 0 }]);
+        assert!(theme.is_ok());
     }
 }
