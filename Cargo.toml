@@ -14,7 +14,7 @@ keywords = ["image", "identicon", "avatar"]
 categories = ["graphics", "multimedia::images", "value-formatting", "visualization"]
 
 [dependencies]
-image = "0.25"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png"] }
 sha3 = "0.10"
 thiserror = "2.0"
 
