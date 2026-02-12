@@ -323,8 +323,12 @@ mod tests {
 
     #[test]
     fn trim_of_input_works() {
-        let image_normal = Identicon::new("test").generate_image().expect("identicon should generate an image");
-        let image_padded = Identicon::new("  test  ").generate_image().expect("identicon should generate an image");
+        let image_normal = Identicon::new("test")
+            .generate_image()
+            .expect("identicon should generate an image");
+        let image_padded = Identicon::new("  test  ")
+            .generate_image()
+            .expect("identicon should generate an image");
         assert_eq!(
             image_normal.to_rgb8().into_raw(),
             image_padded.to_rgb8().into_raw()
@@ -333,8 +337,12 @@ mod tests {
 
     #[test]
     fn trim_of_input_failure_works() {
-        let image_normal = Identicon::new("test").generate_image().expect("identicon should generate an image");
-        let image_padded = Identicon::new("  test1  ").generate_image().expect("identicon should generate an image");
+        let image_normal = Identicon::new("test")
+            .generate_image()
+            .expect("identicon should generate an image");
+        let image_padded = Identicon::new("  test1  ")
+            .generate_image()
+            .expect("identicon should generate an image");
         assert_ne!(
             image_normal.to_rgb8().into_raw(),
             image_padded.to_rgb8().into_raw()
@@ -366,14 +374,16 @@ mod tests {
     #[test]
     fn from_str_works() {
         let identicon = Identicon::new("test");
-        let identicon_from_str = Identicon::from_str("test").expect("identicon should compile from string");
+        let identicon_from_str =
+            Identicon::from_str("test").expect("identicon should compile from string");
         assert_eq!(identicon.hash, identicon_from_str.hash);
     }
 
     #[test]
     fn from_str_failure_works() {
         let identicon = Identicon::new("test");
-        let identicon_from_str = Identicon::from_str("test1").expect("identicon should compile from string");
+        let identicon_from_str =
+            Identicon::from_str("test1").expect("identicon should compile from string");
         assert_ne!(identicon.hash, identicon_from_str.hash);
     }
 }
