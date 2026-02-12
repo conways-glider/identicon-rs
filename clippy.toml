@@ -1,0 +1,5 @@
+# clippy.toml
+allow-unwrap-in-consts = false
+allow-unwrap-in-tests = false
+
+allow-expect-in-tests = true
