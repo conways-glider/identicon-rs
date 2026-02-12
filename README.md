@@ -46,6 +46,14 @@ You will obtain images analogous to the following ones:
   <img src="examples/example3.png" width="100" />
 </p>
 
+## Minimum Supported Rust Version (MSRV) Policy
+
+This project currently intends to keep our MSRV on a N-2 policy. That means that we will update the MSRV to at most 2 versions behind the current Rust version.
+
+The MSRV is not automatically updated, however we will do our best to consider the benefits of each Rust release.
+
+This policy is subject to changing at any time, but it won't change without a substantial feature needed.
+
 ## License
 
 Licensed under either of
