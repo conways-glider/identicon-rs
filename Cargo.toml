@@ -1,6 +1,6 @@
 [package]
 name = "identicon-rs"
-version = "7.0.1"
+version = "7.1.0"
 authors = ["Nia Maxwell <nia@conwaysglider.com>"]
 edition = "2024"
 rust-version = "1.87.0"
