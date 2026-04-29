@@ -14,19 +14,33 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        features:
+          - ""
+          - "--no-default-features"
+          - "--no-default-features --features png"
+          - "--no-default-features --features jpeg"
     steps:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@stable
     - name: Check
-      run: cargo check --verbose
+      run: cargo check --verbose ${{ matrix.features }}
 
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        features:
+          - ""
+          - "--no-default-features"
+          - "--no-default-features --features png"
+          - "--no-default-features --features jpeg"
     steps:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@stable
     - name: Run tests
-      run: cargo test --verbose
+      run: cargo test --verbose ${{ matrix.features }}
 
   fmt:
     runs-on: ubuntu-latest
@@ -40,13 +54,20 @@ jobs:
 
   clippy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        features:
+          - ""
+          - "--no-default-features"
+          - "--no-default-features --features png"
+          - "--no-default-features --features jpeg"
     steps:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@stable
       with:
         components: clippy
     - name: Run clippy
-      run: cargo clippy
+      run: cargo clippy ${{ matrix.features }}
 
   # Tool: https://github.com/EmbarkStudios/cargo-deny
   # Action: https://github.com/EmbarkStudios/cargo-deny-action

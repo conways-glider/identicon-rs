@@ -3,15 +3,22 @@
 #![forbid(missing_docs)]
 #![forbid(clippy::unwrap_used)]
 #![forbid(clippy::expect_used)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 use std::str::FromStr;
 use std::sync::Arc;
 
 use crate::error::IdenticonError;
+
+#[cfg(any(feature = "png", feature = "jpeg"))]
+use image::ImageEncoder;
+#[cfg(feature = "jpeg")]
 use image::codecs::jpeg::JpegEncoder;
+#[cfg(feature = "png")]
 use image::codecs::png::PngEncoder;
+
 use image::imageops::FilterType;
-use image::{DynamicImage, GenericImage, ImageBuffer, ImageEncoder};
+use image::{DynamicImage, GenericImage, ImageBuffer};
 use theme::Theme;
 
 /// Identicon errors
@@ -207,7 +214,9 @@ impl Identicon {
 
     /// Saves the generated image to the given filename.
     ///
-    /// The file formats `.png`, `.jpg`, `.jpeg`, `.bmp`, and `.ico` work.
+    /// The file formats `.png`, `.jpg`, and `.jpeg` work.
+    #[cfg(any(feature = "png", feature = "jpeg"))]
+    #[cfg_attr(docsrs, doc(cfg(any(feature = "png", feature = "jpeg"))))]
     pub fn save_image(&self, output_filename: &str) -> Result<(), error::IdenticonError> {
         let image = self.generate_image()?;
         image
@@ -219,6 +228,8 @@ impl Identicon {
     ///
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
+    #[cfg(feature = "png")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "png")))]
     pub fn export_png_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
         let image = self.generate_image()?;
         let image_size = image.to_rgb8().width();
@@ -239,6 +250,8 @@ impl Identicon {
     ///
     /// This is for creating a file for a buffer or network response without creating a file on the
     /// filesystem.
+    #[cfg(feature = "jpeg")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "jpeg")))]
     pub fn export_jpeg_data(&self) -> Result<Vec<u8>, error::IdenticonError> {
         let image = self.generate_image()?;
         let image_size = image.to_rgb8().width();
