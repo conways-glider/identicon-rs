@@ -14,8 +14,13 @@ license = "MIT OR Apache-2.0"
 keywords = ["image", "identicon", "avatar"]
 categories = ["graphics", "multimedia::images", "value-formatting", "visualization"]
 
+[features]
+default = ["png", "jpeg"]
+png = ["image/png"]
+jpeg = ["image/jpeg"]
+
 [dependencies]
-image = { version = "0.25", default-features = false, features = ["jpeg", "png"] }
+image = { version = "0.25", default-features = false }
 sha3 = "0.11"
 thiserror = "2.0"
 
@@ -23,3 +28,19 @@ thiserror = "2.0"
 axum = "0.8"
 tokio = { version = "1", features = ["full"] }
 version-sync = "0.9"
+
+[[example]]
+name = "main"
+required-features = ["png"]
+
+[[example]]
+name = "theme"
+required-features = ["png"]
+
+[[example]]
+name = "webserver"
+required-features = ["png", "jpeg"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

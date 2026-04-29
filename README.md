@@ -12,6 +12,22 @@ This is an Identicon implementation in rust.
 - [docs.rs](https://docs.rs/identicon-rs)
 - [GitHub Pages](https://conways-glider.github.io/identicon-rs/)
 
+## Features
+
+| Feature | Default | Description |
+|---------|---------|-------------|
+| `png`   | enabled | Enables `export_png_data` and PNG support in `save_image` |
+| `jpeg`  | enabled | Enables `export_jpeg_data` and JPEG support in `save_image` |
+
+To disable one or both codecs (e.g. for embedded targets or smaller binaries), use `default-features = false`:
+
+```toml
+[dependencies]
+identicon-rs = { version = "7", default-features = false }
+```
+
+`generate_image()` is always available regardless of features.
+
 ## Example
 
 ```rust
@@ -24,12 +40,15 @@ fn main() -> Result<(), IdenticonError> {
 
     // stored example
     let identicon_conways_glider = Identicon::new(&conways_glider);
+    #[cfg(feature = "png")]
     identicon_conways_glider.save_image("output_1.png")?;
 
     // chained example with no border
+    #[cfg(feature = "png")]
     Identicon::new(test_string)
         .set_border(0)
         .save_image("output_2.png")?;
+# let _ = (identicon_conways_glider, test_string);
     Ok(())
 }
 ```
