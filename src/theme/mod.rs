@@ -122,7 +122,6 @@ pub struct HSLRange {
 
     /// A vector of background colors to choose from based on the input hash.
     /// This can be a vector of one value to allow for constant backgrounds.
-    // background: Vec<RGB>,
     background: Vec<RGB>,
 }
 
@@ -220,7 +219,7 @@ impl Theme for HSLRange {
 
         // Convert HSL to RGB
         let chroma = (1.0 - ((2.0 * lightness) - 1.0).abs()) * saturation;
-        let hue_prime = hue / 60.0;
+        let hue_prime = (hue / 60.0).clamp(0.0, 6.0);
         let x = chroma * (1.0 - ((hue_prime % 2.0) - 1.0).abs());
 
         // Get Prime RGB Values
@@ -232,20 +231,20 @@ impl Theme for HSLRange {
             4.0..5.0 => (x, 0.0, chroma),
             5.0..=6.0 => (chroma, 0.0, x),
             // This should not occur as the hue is between 0 and 360, which casts down to between 0-6
-            _ => (0.0, 0.0, 0.0),
+            _ => unreachable!("hue prime is in [0.0, 6.0)"),
         };
 
         // Lightness modifier
         let m = lightness - chroma * 0.5;
 
-        let red = (r_prime + m) * 255.0;
-        let green = (g_prime + m) * 255.0;
-        let blue = (b_prime + m) * 255.0;
+        let red = ((r_prime + m) * 255.0).clamp(0.0, 255.0) as u8;
+        let green = ((g_prime + m) * 255.0).clamp(0.0, 255.0) as u8;
+        let blue = ((b_prime + m) * 255.0).clamp(0.0, 255.0) as u8;
 
         Ok(RGB {
-            red: red as u8,
-            green: green as u8,
-            blue: blue as u8,
+            red,
+            green,
+            blue,
         })
     }
 
