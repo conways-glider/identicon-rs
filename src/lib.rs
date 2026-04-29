@@ -147,7 +147,7 @@ impl Identicon {
     }
 
     /// Gets the current theme.
-    pub fn theme(&self) -> Arc<dyn Theme> {
+    pub fn theme(&self) -> Arc<dyn Theme + Send + Sync> {
         self.theme.clone()
     }
 
