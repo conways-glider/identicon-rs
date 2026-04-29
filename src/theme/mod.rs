@@ -241,11 +241,7 @@ impl Theme for HSLRange {
         let green = ((g_prime + m) * 255.0).clamp(0.0, 255.0) as u8;
         let blue = ((b_prime + m) * 255.0).clamp(0.0, 255.0) as u8;
 
-        Ok(RGB {
-            red,
-            green,
-            blue,
-        })
+        Ok(RGB { red, green, blue })
     }
 
     fn background_color(&self, hash: &[u8]) -> Result<RGB, ThemeError> {
